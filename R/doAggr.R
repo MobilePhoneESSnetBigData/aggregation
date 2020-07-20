@@ -1,4 +1,4 @@
-doAggr <- function(ichunks, ndevices, nTiles, postLoc, devices, dupProbs, regions) {
+doAggr <- function(ichunks, n, ndevices, nTiles, postLoc, devices, dupProbs, regions) {
   nIndividualsT <- list(length=length(ichunks))
   k<-1
   for(t in ichunks) {
@@ -19,7 +19,8 @@ doAggr <- function(ichunks, ndevices, nTiles, postLoc, devices, dupProbs, region
     dedupProbs <- merge( dedupProbs, regions, by = c('tile'))
     dedupProbs <- dedupProbs[ ,list(prob = sum(prob)), by = c('device', 'region', 'devCount')]
     setnames(dedupProbs, 'region', 'cell')
-    nIndividuals_MNO_RSS <- as.data.table(rNnet_Event(n=1e2, dedupProbs))
+    
+    nIndividuals_MNO_RSS <- as.data.table(rNnet_Event(n, dedupProbs))
     nIndividuals_MNO_RSS_molten <- melt( nIndividuals_MNO_RSS, variable.name = 'region', value.name = 'N')
     #nIndividuals_MNO_RSS_molten <- nIndividuals_MNO_RSS_molten[,-1]
     nIndividuals_MNO_RSS_molten <- cbind(rep(t, times = nrow(nIndividuals_MNO_RSS_molten)), nIndividuals_MNO_RSS_molten)

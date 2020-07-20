@@ -1,3 +1,12 @@
+#' @title Computes the number of individuals.
+#' 
+#' @description 
+#' 
+#' @param categories
+#' 
+#' @return 
+#' 
+#' @import data.table
 nIndividuals <- function(categories){
   
   catPerDevice <- Reduce(rbind, lapply(as.character(categories), function(str) {
