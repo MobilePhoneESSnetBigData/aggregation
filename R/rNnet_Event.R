@@ -1,12 +1,12 @@
-#' @title Generates random values from a Poisson multinomial distribution
+#' @title Generates random values from a Poisson multinomial distribution.
 #' 
-#' @description Generates random values from a Poisson multinomial distribution
+#' @description Generates random values from a Poisson multinomial distribution.
 #' 
-#' @param n The number of random values to generate
+#' @param n The number of random values to generate.
 #' 
-#' @param prob.dt A data.table object with the following columns:
+#' @param prob.dt A data.table object with the following columns:\code{device, cell, devCount, prob}.
 #' 
-#' @return A matrix object with the random values generated accoridng to the Poisson multinomial distribution
+#' @return A matrix object with the random values generated according to a Poisson multinomial distribution.
 #' 
 #' 
 #' @import data.table

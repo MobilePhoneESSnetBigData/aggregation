@@ -2,18 +2,18 @@
 % Please edit documentation in R/rNnet_Event.R
 \name{rNnet_Event}
 \alias{rNnet_Event}
-\title{Generates random values from a Poisson multinomial distribution}
+\title{Generates random values from a Poisson multinomial distribution.}
 \usage{
 rNnet_Event(n, prob.dt)
 }
 \arguments{
-\item{n}{The number of random values to generate}
+\item{n}{The number of random values to generate.}
 
-\item{prob.dt}{A data.table object with the following columns:}
+\item{prob.dt}{A data.table object with the following columns:\code{device, cell, devCount, prob}.}
 }
 \value{
-A matrix object with the random values generated accoridng to the Poisson multinomial distribution
+A matrix object with the random values generated according to a Poisson multinomial distribution.
 }
 \description{
-Generates random values from a Poisson multinomial distribution
+Generates random values from a Poisson multinomial distribution.
 }
