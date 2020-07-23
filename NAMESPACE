@@ -2,9 +2,11 @@
 
 export(buildPostLocJointProbs)
 export(rNnetEvent)
+export(rNnetEventOD)
 import(Matrix)
 import(data.table)
 import(deduplication)
+import(destim)
 import(doParallel)
 import(extraDistr)
 import(parallel)

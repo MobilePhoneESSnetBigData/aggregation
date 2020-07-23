@@ -9,7 +9,9 @@
 #'@param signalFileName
 #'
 #'
-#'
+#'@import data.table
+#'@import destim
+#'@import deduplication
 #'@export
 buildPostLocJointProbs <-function(path, simFileName, gridFileName, eventsFileName, signalFileName) {
     if(!file.exists(simFileName))
@@ -44,7 +46,7 @@ buildPostLocJointProbs <-function(path, simFileName, gridFileName, eventsFileNam
         out[,rasterCell_from:=NULL]
         out[,rasterCell_to:=NULL]
         out[,device:=NULL]
-        write.table(out, file=paste0(path, "/postLocJointProbDevice_", devices[j],".csv"), sep=",", row.names = FALSE)
+        write.table(out, file=paste0(path, "/postLocJointProbDevice_", devices[j],".csv"), sep=",", row.names = FALSE, col.names = FALSE)
     }
 }
 
@@ -95,12 +97,13 @@ transform_postLocJointProb <- function(postJointLocP,
                                       all.x = TRUE, by = intersect(names(allTilesTimes), names(postJointLocP.dt)))
             rm(allTilesTimes)
             postJointLocP.dt[is.na(eventLoc), eventLoc := 0]
+            
         }
         
         postJointLocP.dt <- postJointLocP.dt[, time_to := time_from + t_increment]
+        postJointLocP.dt[eventLoc<0, eventLoc := 0]
         setcolorder(postJointLocP.dt, c('time_from', 'time_to', 'tile_from', 'tile_to', 
                                         'eventLoc', 'device', 'rasterCell_from', 'rasterCell_to'))
-        
         
     }
     

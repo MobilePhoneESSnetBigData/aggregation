@@ -27,5 +27,8 @@ Collate:
     'rNnet_Event.R'
     'aggregation.R'
     'buildPostLocJointProbs.R'
-    
+    'rNnetEventOD.R'
+    'nIndividuals2.R'
+    'rNnetCond_Event.R'
+    'buildCluster.R'
 
