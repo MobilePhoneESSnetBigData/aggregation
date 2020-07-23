@@ -42,7 +42,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     ndevices <- nrow(dupProbs)
     postLocJoint<-NULL
 
-    cl <- buildCluster(c('postLocJointPath', 'prefix', 'dupProbs', 'devices') , env=environment())
+    cl <- buildCluster(c('postLocJointPath', 'prefix', 'devices') , env=environment())
     ichunks <- clusterSplit(cl, 1:ndevices)
     res <-
         clusterApplyLB(
@@ -51,23 +51,13 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
             doRead,
             postLocJointPath,
             prefix,
-            dupProbs,
             devices
         )
     for(i in 1:length(res))
         res[[i]]<-as.data.table(as.matrix(res[[i]]))
     result <- rbindlist(res)
     
-    # 
-    # for( i in 1:ndevices) {
-    #     l <- readPostLocProb(postLocJointPath, prefix, dupProbs[i,1])
-    #     l <- cbind(rep(devices[i], times= nrow(l)), l )
-    #     postLocJoint<-rbind(postLocJoint,l)
-    # }
-    # rm(l)
-    # 
-    # postLocJoint <- as.data.table(as.matrix(postLocJoint))
-    
+
     postLocJoint <- as.data.table(as.matrix(result))
     setnames(postLocJoint, c('device', 'time_from', "time_to", "tile_from", "tile_to", "eventLoc"))
     
@@ -157,10 +147,10 @@ doOD <- function(ichunks, n, cellNames, time_increment, dedupProbs){
     return(NnetReg)
 }
 
-doRead <- function(ichunks, path, prefix, dupP, devices) {
+doRead <- function(ichunks, path, prefix, devices) {
     postLoc <- NULL
     for(i in ichunks) {
-        l <- readPostLocProb(path, prefix, dupP[i,1])
+        l <- readPostLocProb(path, prefix, devices[i])
         l <- cbind(rep(devices[i], times= nrow(l)), l )
         postLoc<-rbind(postLoc,l)
     }
