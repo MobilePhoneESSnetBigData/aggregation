@@ -15,14 +15,15 @@
 #' @param postLocPath The path where the files with the posterior location probabilities for each devices can be found.
 #'   A file with the location probabilities should have the name \code{postLocDevice_ID.csv} where \code{ID} is replaced
 #'   with the device ID.
+#' 
+#' @param prefix TODO
 #'
 #'
-#' @import parallel
-#' @import doParallel
 #' @import data.table
 #' @import deduplication
+#' @include doAggr.R
 #' @export
-rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, times = NULL) {
+rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, prefix, times = NULL) {
   # 1. read duplicity probs.
   
   if (!file.exists(dupFileName))
@@ -51,7 +52,7 @@ rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, times = NULL) 
   ndevices <- nrow(dupProbs)
   postLoc<-list(length = ndevices)
   for( i in 1:ndevices) {
-    postLoc[[i]] <- readPostLocProb(postLocPath, dupProbs[i,1])
+    postLoc[[i]] <- readPostLocProb(postLocPath, prefix, dupProbs[i,1])
   }
   
   T <- ncol(postLoc[[1]])
@@ -63,19 +64,8 @@ rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, times = NULL) 
   
   
   # 4. computation begins ...
-  #### parallel  
   # build cluster
-
-  if (Sys.info()[['sysname']] == 'Linux' |
-      Sys.info()[['sysname']] == 'Darwin') {
-    cl <- makeCluster(detectCores(), type = "FORK")
-  } else {
-    cl <- makeCluster(detectCores())
-    clusterEvalQ(cl, library("data.table"))
-    clusterEvalQ(cl, library("deduplication"))
-    clusterEvalQ(cl, library("extraDistr"))
-    clusterExport(cl, c('postLoc', 'devices', 'ndevices', 'nTiles', 'dupProbs', 'regions', 'rNnet_Event', 'nIndividuals'), envir = environment())
-  }
+  cl <- buildCluster(c('postLoc', 'nTiles', 'dupProbs', 'regions') , env=environment())
   ichunks <- clusterSplit(cl, 1:T)
   
   res <-
@@ -84,10 +74,8 @@ rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, times = NULL) 
       ichunks,
       doAggr,
       n,
-      ndevices,
       nTiles,
       postLoc,
-      devices,
       dupProbs,
       regions
     )

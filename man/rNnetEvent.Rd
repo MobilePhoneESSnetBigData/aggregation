@@ -4,7 +4,7 @@
 \alias{rNnetEvent}
 \title{Generates random values according to a Poisson multinomial probability distribution.}
 \usage{
-rNnetEvent(n, dupFileName, regsFileName, postLocPath, times = NULL)
+rNnetEvent(n, dupFileName, regsFileName, postLocPath, prefix, times = NULL)
 }
 \arguments{
 \item{n}{The number of values to be generated}
@@ -17,6 +17,8 @@ first column contains the IDs of each tile in the grid while the second contains
 \item{postLocPath}{The path where the files with the posterior location probabilities for each devices can be found.
 A file with the location probabilities should have the name \code{postLocDevice_ID.csv} where \code{ID} is replaced
 with the device ID.}
+
+\item{prefix}{TODO}
 
 \item{times}{An optional vector with the time instants when the events were registered.}
 }

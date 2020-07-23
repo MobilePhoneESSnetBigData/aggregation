@@ -12,7 +12,7 @@
 #' @return a cluster object.
 #'
 #' @import data.table
-#' @import destim
+#' @import extraDistr
 #' @import parallel
 #' @import doParallel
 #'   
@@ -23,7 +23,6 @@ buildCluster <- function(varlist, env) {
     cl <- makeCluster(detectCores(), type = "FORK")
   } else {
     cl <- makeCluster(detectCores())
-    clusterEvalQ(cl, library("destim"))
     clusterEvalQ(cl, library("data.table"))
     clusterEvalQ(cl, library("extraDistr"))
     clusterExport(cl, varlist, envir = env)

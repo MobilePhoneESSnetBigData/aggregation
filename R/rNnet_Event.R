@@ -14,7 +14,7 @@
 rNnet_Event <- function(n, prob.dt){
   
   
-  if (!all(c('device', 'cell', 'devCount', 'prob') %in% names(prob.dt))) {
+  if (!all(c('device', 'region', 'devCount', 'prob') %in% names(prob.dt))) {
     
     stop('[rNnet_Event] prob.dt must have columns device, cell, devCount, prob.\n')
   }
@@ -26,8 +26,8 @@ rNnet_Event <- function(n, prob.dt){
   }
   
   x1 <- prob.dt[
-      , c('device', 'cell', 'devCount', 'prob'), with = FALSE][
-        , categories := paste0(cell, '-', devCount)]
+      , c('device', 'region', 'devCount', 'prob'), with = FALSE][
+        , categories := paste0(region, '-', devCount)]
   x2 <- x1[
     , list(category = rcat(n, prob, categories)), by = 'device'][
       , nSim := 1:n, by = 'device']

@@ -8,6 +8,8 @@
 #' # set the folder where the necessary input files are stored
 #' path      <- 'extdata'
 #'
+#' prefix='postLocDevice'
+#' 
 #' # set the duplicity probabilities file name, i.e. the file with duplicity probability for each device
 #' dpFile<-system.file(path, 'duplicity.csv', package = 'aggregation')
 #' 
@@ -17,16 +19,23 @@
 #' 
 #' # generate n random values
 #' n <- 1e3
-#' vals <- rNnetEvent(n, dpFile, rgFile, system.file(path, package = 'aggregation'))
+#' nNet <- rNnetEvent(n, dpFile, rgFile, system.file(path, package = 'aggregation'), prefix)
 #'
-#' # print the number of detected individuals for each region, for each time instant
-#' regions <- as.numeric(unique(vals$region))
-#' times <- unique(vals$time)
+#' # print the mean number of detected individuals for each region, for each time instant
+#' regions <- as.numeric(unique(nNet$region))
+#' times <- unique(nNet$time)
 #'
 #' for(r in regions) {
 #'     print(paste0("region: ", r))
 #'     for(t in times) {
-#'         print(paste0("time instant: ", t, " number of individuals: " , mean(vals[region == r][time ==t]$N)))
+#'         print(paste0("time instant: ", t, " number of individuals: " , mean(nNet[region == r][time ==t]$N)))
 #'     }
 #' }
+#' 
+#' 
+#' # For the origin-destination matrix we proceed in a similar way
+#' prefixJ <- 'postLocJointProbDevice'
+#' nnetOD <- rNnetEventOD(n, dpFile, rgFile, system.file(path, package = 'aggregation'), prefixJ))
+#' 
+#' 
 example <- function() {}

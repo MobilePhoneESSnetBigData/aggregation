@@ -20,15 +20,14 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Collate: 
+    'aggregation.R'
+    'buildCluster.R'
+    'buildPostLocJointProbs.R'
+    'rNnet_Event.R'
     'doAggr.R'
     'example.R'
     'nIndividuals.R'
-    'rNnetEvent.R'
-    'rNnet_Event.R'
-    'aggregation.R'
-    'buildPostLocJointProbs.R'
-    'rNnetEventOD.R'
     'nIndividuals2.R'
     'rNnetCond_Event.R'
-    'buildCluster.R'
-
+    'rNnetEvent.R'
+    'rNnetEventOD.R'
