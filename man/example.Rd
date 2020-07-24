@@ -42,7 +42,7 @@ for(r in regions) {
 
 # For the origin-destination matrix we proceed in a similar way
 prefixJ <- 'postLocJointProbDevice'
-nnetOD <- rNnetEventOD(n, dpFile, rgFile, system.file(path, package = 'aggregation'), prefixJ))
+nnetOD <- rNnetEventOD(n, dpFile, rgFile, system.file(path, package = 'aggregation'), prefixJ)
 
 
 }

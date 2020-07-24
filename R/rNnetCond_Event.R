@@ -15,41 +15,43 @@
 #' 
 rNnetCond_Event <- function(n, prob.dt, cellNames){
   
-  if (!all(c('device', 'region_from', 'region_to', 'devCount', 'prob') %in% names(prob.dt))) {
-    stop('[rNnetCond_E] prob.dt must have columns device, region_from, region_to, devCount, prob.\n')
+  if (!all(c('device', 'cell_from', 'cell_to', 'devCount', 'prob') %in% names(prob.dt))) {
+    
+    stop('[rNnetCond_E] prob.dt must have columns device, cell_from, cell_to, devCount, prob.\n')
   }
   
-  probSums <- prob.dt[, list(totalProb = sum(prob)), by = c('device', 'region_from')]$totalProb
-  if (!all(abs(probSums - 1) < 1e-5)) {
+  probSums <- prob.dt[, list(totalProb = sum(prob)), by = c('device', 'cell_from')]$totalProb
+  if (!all(abs(probSums - 1) < 1e-1)) {
+    
     stop('[rNnetCond_E] The sum of probabilities per device is not 1.\n')
   }
   
   x1 <- prob.dt[
-    , c('device', 'region_from', 'region_to', 'devCount', 'prob'), with = FALSE][
-      , categories := paste0(region_from, '-', devCount)]
-
+    , c('device', 'cell_from', 'cell_to', 'devCount', 'prob'), with = FALSE][
+      , categories := paste0(cell_from, '-', devCount)]
+  #return(x1)
   x2 <- x1[
-    , list(category = rcat(n, prob, categories)), by = c('device', 'region_from')][
-      , nSim := 1:n, by = c('device', 'region_from')]
-
-  x3 <- dcast(x2, device + region_from ~ nSim, value.var = 'category')
-
-  x3.list <- split(x3, x3$region_from)
-
-  
+    , list(category = rcat(n, prob, categories)), by = c('device', 'cell_from')][
+      , nSim := 1:n, by = c('device', 'cell_from')]
+  #return(x2)
+  x3 <- dcast(x2, device + cell_from ~ nSim, value.var = 'category')
+  cells <- cellNames
+  x3.list <- split(x3, x3$cell_from)
+  #return(x3.list)
   x4.list <- lapply(x3.list, function(DT){
-
-    region_from <- unique(DT[[2]])
+    
+    cell_from <- unique(DT[[2]])
     x4 <- DT[
       , lapply(.SD, nIndividuals2, cellNames = cellNames), .SDcols = names(DT)[-(1:2)]]
     x4.dt <- data.table(t(as.matrix(x4)))
     setnames(x4.dt, as.character(cellNames))
     x4_molten.dt <- melt(x4.dt[
-      , region_from := region_from], id.vars = 'region_from', 
-      variable.name = 'region_to', value.name = 'Nnet', variable.factor = FALSE)
+      , cell_from := cell_from], id.vars = 'cell_from', 
+      variable.name = 'cell_to', value.name = 'Nnet', variable.factor = FALSE)
     x4_molten.dt
   })
-
+  #return(x4.list)
   x5.dt <- rbindlist(x4.list)
   return(x5.dt)
 }
+

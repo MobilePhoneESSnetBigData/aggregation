@@ -133,7 +133,11 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     ichunks <- clusterSplit(cl, time_from)
     cellNames<-sort(unlist(unique(regions[,2])))
     n<-n
+    setnames(dedupProbsReg, c('region_from', 'region_to'), c('cell_from', 'cell_to'))
     clusterExport(cl, c('cellNames', 'n', 'time_increment', 'dedupProbsReg'), envir = environment())
+    
+    #ichunks <- seq(from = 0, to=890, by=10)
+    #result<-doOD(ichunks, n, cellNames, time_increment,dedupProbsReg)
     res <-
         clusterApplyLB(
             cl,
@@ -153,9 +157,11 @@ doOD <- function(ichunks, n, cellNames, time_increment, dedupProbs){
 
     NnetReg <- dedupProbs[time_from %in% ichunks][
         , rNnetCond_Event(.SD, cellNames = cellNames, n=n ), by = 'time_from', .SDcols = names(dedupProbs)][
-            , time_to := time_from + time_increment]
+            , time_to := time_from + time_increment][
+                , cell_to := as.integer(cell_to)][
+                    , cell_from := as.integer(cell_from)]
     
-    setcolorder(NnetReg, c('time_from', 'time_to', 'region_from', 'region_to', 'Nnet'))
+    setcolorder(NnetReg, c('time_from', 'time_to', 'cell_from', 'cell_to', 'Nnet'))
     return(NnetReg)
 }
 
