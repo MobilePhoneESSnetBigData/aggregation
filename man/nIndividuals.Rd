@@ -2,16 +2,17 @@
 % Please edit documentation in R/nIndividuals.R
 \name{nIndividuals}
 \alias{nIndividuals}
-\title{Computes the number of individuals.}
+\title{Computes the number of individuals as a sum of multinomial varibales.}
 \usage{
 nIndividuals(categories)
 }
 \arguments{
-\item{categories}{}
+\item{categories}{a list of categories in the form \code{region-devCount}.}
 }
 \value{
-
+The sum of the multinomial variates.
 }
 \description{
-
+Computes the number of individuals as a sum of multinomial varibales. It is an internal function that is
+  called during the process of generating the Poisson multinomial distributed random values.
 }

@@ -1,22 +1,26 @@
 #' @title Generates random values according to a Poisson multinomial probability distribution.
 #'
 #' @description Generates random values according to a Poisson multinomial probability distribution. A point estimation
-#' derived from this distribution (mean, mode) represents an estimation of the number of individuals in a region.
+#'   derived from this distribution (mean, mode) represents an estimation of the number of individuals detected by the
+#'   network in a region. Regions are composed as a number of adjacent tiles.
 #'
-#' @param n The number of values to be generated
+#' @param n The number of random values to be generated.
 #'
-#' @param dupFileName The name of the .csv file with the duplicity probability for each device
+#' @param dupFileName The name of the .csv file with the duplicity probability for each device. This is an output of the
+#'   \code{deduplication} package.
 #'
 #' @param regsFileName The name of the .csv file defining the regions. It has two columns: \code{ tile, region}. The
-#'   first column contains the IDs of each tile in the grid while the second contains the number of a region.
-#'   
-#' @param times An optional vector with the time instants when the events were registered.
+#'   first column contains the IDs of each tile in the grid while the second contains the number of a region. This file
+#'   is defined by the user and it can be created with any text editor.
 #'
-#' @param postLocPath The path where the files with the posterior location probabilities for each devices can be found.
-#'   A file with the location probabilities should have the name \code{postLocDevice_ID.csv} where \code{ID} is replaced
-#'   with the device ID.
+#' @param postLocPath The path where the files with the posterior location probabilities for each device can be found.
+#'   A file with the location probabilities should have the name \code{prefix_ID.csv} where \code{ID} is replaced
+#'   with the device ID and \code{prefix} is given as a parameter to this function.
+#'
+#' @param prefix A prefix that is used to compose the file name with posterior location probabilities.
 #' 
-#' @param prefix TODO
+#' @param times An optional vector with the time instants when the events were registered. If it is not provided, in the
+#'   output, the succesive time instants will be represented by thier index (starting from 1).
 #'
 #'
 #' @import data.table

@@ -2,23 +2,33 @@
 % Please edit documentation in R/doAggr.R
 \name{doAggr}
 \alias{doAggr}
-\title{Called}
+\title{Generates a sequence of Poisson multinomial random values for a sequence of time instants.}
 \usage{
 doAggr(ichunks, n, nTiles, postLoc, dupProbs, regions)
 }
 \arguments{
-\item{ichunks}{...}
+\item{ichunks}{A partion of time instants.}
 
-\item{n}{...}
+\item{n}{The number of random values to be generated.}
 
-\item{nTiles}{...}
+\item{nTiles}{The number of tiles in the grid.}
 
-\item{postLoc}{...}
+\item{postLoc}{A list with posterior location probabilities matrices. Each element of the list corresponds to a
+device.}
 
-\item{dupProbs}{...}
+\item{dupProbs}{The duplicity probabilities for each device. It is a data.table object with two columns:
+\code{deviceID, dupProb}.}
 
-\item{regions}{...}
+\item{regions}{a data.table object with two columns: \code{tile, region}. It defines each region as a composition of
+multiple tiles.}
+}
+\value{
+a data.table object with the following column: \code{time, region, N}. It contains \code{n} randomn values
+  for each combination \code{time-region}. An estimation of the number of individuals in a region can be obtained
+  using the mean. mode or median of these values.
 }
 \description{
-Called
+Generates a sequence of Poisson multinomial random values for a sequence of time instants. This function
+  is called internally by \code{rNnetEvent} function which partitions the time instants into equal chunks, creates a
+  cluster of working processes and distributes the ckunks to different workers that run in parallel.
 }

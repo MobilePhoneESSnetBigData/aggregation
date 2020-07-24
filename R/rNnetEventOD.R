@@ -1,19 +1,31 @@
-#'@title Generates random value according to a Poisson multinomial distribution
+#'@title Generates random value according to a Poisson multinomial distribution needed to estimate the origin
+#'  destination matrices.
 #'
+#'@description Generates random value according to a Poisson multinomial distribution needed to estimate the origin
+#'  destination matrices. This is a high level function, the only one to be called by users to estimate the number of
+#'  individuals going from one region to another. The actual computations are performed using a paralelization
+#'  (transparent to the users) which uses the whole number of (logical) cores.
 #'
+#'@param n The number of random values to be generated.
 #'
+#'@param dupFileName The name of the .csv file with the duplicity probability for each device. This is an output of the
+#'  \code{deduplication} package.
 #'
+#'@param regsFileName The name of the .csv file defining the regions. It has two columns: \code{ tile, region}. The
+#'  first column contains the IDs of each tile in the grid while the second contains the number of a region. This file
+#'  is defined by the user and it can be created with any text editor.
 #'
+#'@param postLocPath The path where the files with the posterior location probabilities for each device can be found. A
+#'  file with the location probabilities should have the name \code{prefix_ID.csv} where \code{ID} is replaced with the
+#'  device ID and \code{prefix} is given as a parameter to this function.
 #'
-#'
-#'
+#'@param prefix A prefix that is used to compose the file name with posterior location probabilities.
 #'
 #'
 #'@import extraDistr
 #'@import data.table
 #'@import deduplication
 #'@import parallel
-#'
 #'
 #'@export
 rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {

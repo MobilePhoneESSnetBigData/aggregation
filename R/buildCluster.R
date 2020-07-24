@@ -1,6 +1,6 @@
-#' @title Build a cluster of working nodes.
+#' @title Builds a cluster of working nodes.
 #'
-#' @description Build a cluster of working nodes using the \code{parallel} package. On Unix-like operating systems it
+#' @description Builds a cluster of working nodes using the \code{parallel} package. On Unix-like operating systems it
 #'   builds as "FORK" cluster while on Windows it builds a "SOCKET" cluster. Ther number of working nodes equals the
 #'   number of available (logical) cores as it is detected by the call of \code{detectCores()} function. On Windows, it
 #'   also exports a list of variables and an environment passed as arguments.

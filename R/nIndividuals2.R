@@ -1,3 +1,16 @@
+#' @title Computes the number of individuals moving from a region to another as a sum of multinomial variables.
+#'
+#' @description Computes the number of individuals moving from a region to another as a sum of multinomial varibales. It
+#'   is an internal function that is called during the process of generating the Poisson multinomial distributed random
+#'   values.
+#'
+#' @param categories a list of categories in the form \code{region-devCount}.
+#'
+#' @param cellNames A vector with the names of the regions.
+#'
+#' @return The sum of the multinomial variates.
+#'
+#' @import data.table
 nIndividuals2 <- function(categories, cellNames){
   
   catPerDevice <- Reduce(rbind, lapply(as.character(categories), function(str) {

@@ -1,3 +1,18 @@
+#' @title Generates random values from a Poisson multinomial distribution needed for the origin destination matrices.
+#'
+#' @description Generates random values from a Poisson multinomial distribution needed for the origin destination
+#'   matrices. This function is only called internally.
+#'
+#' @param n The number of random values to generate.
+#'
+#' @param prob.dt A data.table object with the following columns:\code{device, cell, devCount, prob}.
+#'
+#' @return A matrix object with the random values generated according to a Poisson multinomial distribution.
+#'
+#' @import data.table
+#' @import extraDistr
+#' 
+#' 
 rNnetCond_Event <- function(n, prob.dt, cellNames){
   
   if (!all(c('device', 'region_from', 'region_to', 'devCount', 'prob') %in% names(prob.dt))) {

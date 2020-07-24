@@ -1,14 +1,15 @@
 #' @title Generates random values from a Poisson multinomial distribution.
-#' 
-#' @description Generates random values from a Poisson multinomial distribution.
-#' 
+#'
+#' @description Generates random values from a Poisson multinomial distribution. This function is only called
+#'   internally.
+#'
 #' @param n The number of random values to generate.
-#' 
+#'
 #' @param prob.dt A data.table object with the following columns:\code{device, cell, devCount, prob}.
-#' 
+#'
 #' @return A matrix object with the random values generated according to a Poisson multinomial distribution.
-#' 
-#' 
+#'
+#'
 #' @import data.table
 #' @import extraDistr
 rNnet_Event <- function(n, prob.dt){

@@ -1,14 +1,27 @@
-#' @title Called 
-#' 
-#' @description Called
-#' 
-#' @param ichunks ...
-#' @param  n ...
-#' @param nTiles ...
-#' @param postLoc ...
-#' @param dupProbs ...
-#' @param regions ...
-#' 
+#' @title Generates a sequence of Poisson multinomial random values for a sequence of time instants.
+#'
+#' @description Generates a sequence of Poisson multinomial random values for a sequence of time instants. This function
+#'   is called internally by \code{rNnetEvent} function which partitions the time instants into equal chunks, creates a
+#'   cluster of working processes and distributes the ckunks to different workers that run in parallel.
+#'
+#' @param ichunks A partion of time instants.
+#' @param  n The number of random values to be generated.
+#' @param nTiles The number of tiles in the grid.
+#' @param postLoc A list with posterior location probabilities matrices. Each element of the list corresponds to a
+#'   device.
+#' @param dupProbs The duplicity probabilities for each device. It is a data.table object with two columns:
+#'   \code{deviceID, dupProb}.
+#'
+#' @param regions a data.table object with two columns: \code{tile, region}. It defines each region as a composition of
+#'   multiple tiles.
+#'
+#'
+#' @return a data.table object with the following column: \code{time, region, N}. It contains \code{n} randomn values
+#'   for each combination \code{time-region}. An estimation of the number of individuals in a region can be obtained
+#'   using the mean. mode or median of these values.
+#'
+#'
+#'
 #' @import data.table
 #' @include rNnet_Event.R
 doAggr <- function(ichunks, n, nTiles, postLoc, dupProbs, regions) {

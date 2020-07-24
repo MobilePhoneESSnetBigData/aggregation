@@ -15,5 +15,6 @@ rNnet_Event(n, prob.dt)
 A matrix object with the random values generated according to a Poisson multinomial distribution.
 }
 \description{
-Generates random values from a Poisson multinomial distribution.
+Generates random values from a Poisson multinomial distribution. This function is only called
+  internally.
 }
