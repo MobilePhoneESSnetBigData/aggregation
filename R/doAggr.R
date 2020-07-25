@@ -23,17 +23,19 @@
 #'
 #'
 #' @import data.table
+#' @import deduplication
 #' @include rNnet_Event.R
 doAggr <- function(ichunks, n, nTiles, postLoc, dupProbs, regions) {
   nIndividualsT <- list(length=length(ichunks))
   k<-1
   devices<-sort(as.numeric(dupProbs[,1][[1]]))
   ndevices <- length(devices)
-  
+  eq<-as.data.table(tileEquivalence(40,40))
+  tiles<-eq[order(tile)]$rasterCell
   for(t in ichunks) {
     dedupLoc <- data.table()
     for(j in 1:ndevices) {
-      x <- cbind((0:(nTiles-1)), postLoc[[j]][,t], rep(devices[j], times = nTiles))
+      x <- cbind(tiles, as.matrix(postLoc[[j]])[,t], rep(devices[j], times = nTiles))
       dedupLoc <- rbind(dedupLoc, x)
       x <- NULL
     }

@@ -39,7 +39,7 @@ rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, prefix, times 
     header = TRUE,
     stringsAsFactors = FALSE
   )
-  devices<-as.numeric(dupProbs[,1][[1]])
+  devices<-sort(as.numeric(dupProbs[,1][[1]]))
   
   # 2. read regions
   if (!file.exists(regsFileName))
@@ -69,7 +69,7 @@ rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, prefix, times 
   
   # 4. computation begins ...
   # build cluster
-  cl <- buildCluster(c('postLoc', 'nTiles', 'dupProbs', 'regions') , env=environment())
+  cl <- buildCluster(c('postLoc', 'nTiles', 'dupProbs', 'regions', 'doAggr', 'rNnet_Event') , env=environment())
   ichunks <- clusterSplit(cl, 1:T)
   
   res <-
