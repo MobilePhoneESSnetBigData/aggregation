@@ -9,6 +9,9 @@
 #' path      <- 'extdata'
 #'
 #' prefix='postLocDevice'
+#'
+#' # set the grid file name, i.e. the file the parameters of the grid
+#' grFile<-system.file(path, 'grid.csv', package = 'aggregation')
 #' 
 #' # set the duplicity probabilities file name, i.e. the file with duplicity probability for each device
 #' dpFile<-system.file(path, 'duplicity.csv', package = 'aggregation')
@@ -19,7 +22,7 @@
 #' 
 #' # generate n random values
 #' n <- 1e3
-#' nNet <- rNnetEvent(n, dpFile, rgFile, system.file(path, package = 'aggregation'), prefix)
+#' nNet <- rNnetEvent(n, grFile, dpFile, rgFile, system.file(path, package = 'aggregation'), prefix)
 #'
 #' # print the mean number of detected individuals for each region, for each time instant
 #' regions <- as.numeric(unique(nNet$region))

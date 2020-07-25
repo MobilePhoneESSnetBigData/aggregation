@@ -20,10 +20,10 @@ rNnet_Event <- function(n, prob.dt){
     stop('[rNnet_Event] prob.dt must have columns device, cell, devCount, prob.\n')
   }
   
-#  probSums <- prob.dt[, list(totalProb = sum(prob)), by = 'device']$totalProb
-#  if (!all(abs(probSums - 1) < 1e-1)) {
-#    stop('[rNnet_Event] The sum of probabilities per device is not 1.\n')
-#  }
+  probSums <- prob.dt[, list(totalProb = sum(prob)), by = 'device']$totalProb
+  if (!all(abs(probSums - 1) < 1e-5)) {
+    #stop('[rNnet_Event] The sum of probabilities per device is not 1.\n')
+  }
   
   x1 <- prob.dt[
       , c('device', 'region', 'devCount', 'prob'), with = FALSE][

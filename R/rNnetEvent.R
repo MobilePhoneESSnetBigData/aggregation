@@ -27,8 +27,18 @@
 #' @import deduplication
 #' @include doAggr.R
 #' @export
-rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, prefix, times = NULL) {
+rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, prefix, times = NULL) {
   # 1. read duplicity probs.
+
+  if (!file.exists(gridFileName))
+    stop(paste0(gridFileName, " does not exists!"))
+  
+  gridParams <- fread(
+    gridFileName,
+    sep = ',',
+    header = TRUE,
+    stringsAsFactors = FALSE
+  )
   
   if (!file.exists(dupFileName))
     stop(paste0(dupFileName, " does not exists!"))
@@ -64,14 +74,14 @@ rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, prefix, times 
     if(T != length(times))
       stop("Inconsistent data provided: the length of times vector is not the same as the number of time instants computed from the posterior location probabilities files")
 
-  nTiles<-nrow(postLoc[[1]])
-  
+  nTiles <- nrow(postLoc[[1]])
+  eq <- as.data.table(tileEquivalence(gridParams$`No Tiles Y`,gridParams$`No Tiles X`))
+  tiles<-eq[order(tile)]$rasterCell
   
   # 4. computation begins ...
   # build cluster
-  cl <- buildCluster(c('postLoc', 'nTiles', 'dupProbs', 'regions', 'doAggr', 'rNnet_Event') , env=environment())
+  cl <- buildCluster(c('postLoc', 'nTiles', 'tiles', 'dupProbs', 'regions') , env=environment())
   ichunks <- clusterSplit(cl, 1:T)
-  
   res <-
     clusterApplyLB(
       cl,
@@ -79,6 +89,7 @@ rNnetEvent <- function(n, dupFileName, regsFileName, postLocPath, prefix, times 
       doAggr,
       n,
       nTiles,
+      tiles,
       postLoc,
       dupProbs,
       regions

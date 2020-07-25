@@ -4,7 +4,15 @@
 \alias{rNnetEvent}
 \title{Generates random values according to a Poisson multinomial probability distribution.}
 \usage{
-rNnetEvent(n, dupFileName, regsFileName, postLocPath, prefix, times = NULL)
+rNnetEvent(
+  n,
+  gridFileName,
+  dupFileName,
+  regsFileName,
+  postLocPath,
+  prefix,
+  times = NULL
+)
 }
 \arguments{
 \item{n}{The number of random values to be generated.}
