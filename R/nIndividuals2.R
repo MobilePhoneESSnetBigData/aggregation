@@ -20,7 +20,7 @@ nIndividuals2 <- function(categories, cellNames){
   
   nDev <- length(categories)
   cells <- sort(unique(catPerDevice[, 1]))
-  if (!all(cells %in% cellNames)) stop('[nIndividuals2] cells')
+  if (!all(cells %in% cellNames)) stop('[nIndividuals] cells')
   output <- numeric(length(cellNames))
   names(output) <- cellNames
   for (dev_index in 1:nDev){

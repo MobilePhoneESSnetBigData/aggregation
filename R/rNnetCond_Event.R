@@ -11,9 +11,8 @@
 #'
 #' @import data.table
 #' @import extraDistr
-#' 
-#' 
 rNnetCond_Event <- function(n, prob.dt, cellNames){
+  
   
   if (!all(c('device', 'cell_from', 'cell_to', 'devCount', 'prob') %in% names(prob.dt))) {
     
@@ -28,13 +27,14 @@ rNnetCond_Event <- function(n, prob.dt, cellNames){
   
   x1 <- prob.dt[
     , c('device', 'cell_from', 'cell_to', 'devCount', 'prob'), with = FALSE][
-      , categories := paste0(cell_from, '-', devCount)]
+      , categories := paste0(cell_to, '-', devCount)]
   #return(x1)
   x2 <- x1[
     , list(category = rcat(n, prob, categories)), by = c('device', 'cell_from')][
       , nSim := 1:n, by = c('device', 'cell_from')]
   #return(x2)
   x3 <- dcast(x2, device + cell_from ~ nSim, value.var = 'category')
+  #return(x3)
   cells <- cellNames
   x3.list <- split(x3, x3$cell_from)
   #return(x3.list)
