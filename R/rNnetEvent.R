@@ -33,12 +33,7 @@ rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, 
   if (!file.exists(gridFileName))
     stop(paste0(gridFileName, " does not exists!"))
   
-  gridParams <- fread(
-    gridFileName,
-    sep = ',',
-    header = TRUE,
-    stringsAsFactors = FALSE
-  )
+  gridParams <- readGridParams(gridFileName)
   
   if (!file.exists(dupFileName))
     stop(paste0(dupFileName, " does not exists!"))
@@ -75,7 +70,7 @@ rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, 
       stop("Inconsistent data provided: the length of times vector is not the same as the number of time instants computed from the posterior location probabilities files")
 
   nTiles <- nrow(postLoc[[1]])
-  eq <- as.data.table(tileEquivalence(gridParams$`No Tiles Y`,gridParams$`No Tiles X`))
+  eq <- as.data.table(tileEquivalence(gridParams$nrow,gridParams$ncol))
   tiles<-eq[order(tile)]$rasterCell
   
   # 4. computation begins ...

@@ -54,7 +54,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     ndevices <- nrow(dupProbs)
     postLocJoint<-NULL
 
-    cl <- buildCluster(c('postLocJointPath', 'prefix', 'devices') , env=environment())
+    cl <- buildCluster(c('postLocJointPath', 'prefix', 'devices', 'readPostLocProb') , env=environment())
     ichunks <- clusterSplit(cl, 1:ndevices)
     res <-
         clusterApplyLB(
@@ -75,7 +75,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     
     times<-sort(unlist(unique(postLocJoint[,2])))
     time_increment <- times[2]-times[1]
-    rm(times)
+    #rm(times)
     
     postLocJointReg <- merge(
         postLocJoint,
@@ -93,7 +93,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     
     
     postLoc <- postLocJoint[ ,list(locProb = sum(eventLoc)), by = .(device, tile_from, time_from)]
-    rm(postLocJoint)
+    #rm(postLocJoint)
     
     postLocReg <- merge(
         postLoc,
@@ -105,7 +105,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     
     postCondLocReg <- postLocJointReg[
         postLocReg, on = .(device, region_from, time_from)][ , prob := eventLoc / locProb][, .(device, time_from, time_to, region_from, region_to, prob)]
-    rm(postLocJointReg)
+    #rm(postLocJointReg)
     
     dedupProbs2_1_Reg <- merge(
         postCondLocReg, dupProbs[, deviceID := as.numeric(deviceID)], 
@@ -136,8 +136,6 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     setnames(dedupProbsReg, c('region_from', 'region_to'), c('cell_from', 'cell_to'))
     clusterExport(cl, c('cellNames', 'n', 'time_increment', 'dedupProbsReg'), envir = environment())
     
-    #ichunks <- seq(from = 0, to=890, by=10)
-    #result<-doOD(ichunks, n, cellNames, time_increment,dedupProbsReg)
     res <-
         clusterApplyLB(
             cl,

@@ -56,7 +56,8 @@ doAggr <- function(ichunks, n, nTiles, tiles, postLoc, dupProbs, regions) {
     nIndividuals_MNO <- as.data.table(rNnet_Event(n, dedupProbs))
     nIndividuals_MNO_molten <- melt( nIndividuals_MNO, variable.name = 'region', value.name = 'N')
     nIndividuals_MNO_molten <- cbind(rep(t, times = nrow(nIndividuals_MNO_molten)), nIndividuals_MNO_molten)
-    colnames(nIndividuals_MNO_molten)<-c('time', 'region', 'N')
+    nIndividuals_MNO_molten <- cbind(nIndividuals_MNO_molten, 1:n)
+    colnames(nIndividuals_MNO_molten)<-c('time', 'region', 'N', 'iter')
     nIndividualsT[[k]]  <- nIndividuals_MNO_molten
     k<-k+1
   }
