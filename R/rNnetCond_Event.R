@@ -34,6 +34,7 @@ rNnetCond_Event <- function(n, prob.dt, cellNames){
       , nSim := 1:n, by = c('device', 'cell_from')]
   #return(x2)
   x3 <- dcast(x2, device + cell_from ~ nSim, value.var = 'category')
+
   #return(x3)
   cells <- cellNames
   x3.list <- split(x3, x3$cell_from)
@@ -52,6 +53,7 @@ rNnetCond_Event <- function(n, prob.dt, cellNames){
   })
   #return(x4.list)
   x5.dt <- rbindlist(x4.list)
+  x5.dt<-x5.dt[, iter:=rep(1:n, times = nrow(x5.dt)/n)]
   return(x5.dt)
 }
 

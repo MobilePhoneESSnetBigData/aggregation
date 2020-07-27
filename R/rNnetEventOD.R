@@ -158,8 +158,7 @@ doOD <- function(ichunks, n, cellNames, time_increment, dedupProbs){
             , time_to := time_from + time_increment][
                 , cell_to := as.integer(cell_to)][
                     , cell_from := as.integer(cell_from)]
-    
-    setcolorder(NnetReg, c('time_from', 'time_to', 'cell_from', 'cell_to', 'Nnet'))
+    setcolorder(NnetReg, c('time_from', 'time_to', 'cell_from', 'cell_to', 'Nnet', 'iter'))
     return(NnetReg)
 }
 
