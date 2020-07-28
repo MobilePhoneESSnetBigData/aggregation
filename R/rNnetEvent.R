@@ -76,6 +76,7 @@ rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, 
   # 4. computation begins ...
   # build cluster
   cl <- buildCluster(c('postLoc', 'nTiles', 'tiles', 'dupProbs', 'regions') , env=environment())
+  clusterSetRNGStream(cl, iseed=123)
   ichunks <- clusterSplit(cl, 1:T)
   res <-
     clusterApplyLB(

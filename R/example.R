@@ -40,5 +40,22 @@
 #' prefixJ <- 'postLocJointProbDevice'
 #' nnetOD <- rNnetEventOD(n, dpFile, rgFile, system.file(path, package = 'aggregation'), prefixJ)
 #' 
+#' # The origin-destination matrix can be computed now very simple
+#' First we choose two time instants
+#' t1 <- 0
+#' t2 <- 10
+#' # The we extract the regions:
+#' regions_from <- sort(as.numeric(unique(nnetOD$cell_from)))
+#' regions_to <- sort(as.numeric(unique(nnetOD$cell_to)))
+#' 
+#' # Now we compute the origin-destination matrix:
+#' ODmat<-matrix(nrow = length(regions_from), ncol = length(regions_to))
+#' for(r1 in regions_from) {
+#'    for(r2 in regions_to) {
+#'        ODmat[r1,r2] <- round(mean(nnetOD[time_from==t1][time_to==t2][region_from==r1][region_to==r2]$Nnet))
+#'    }
+#' }    
+#' ODmat
+#' 
 #' 
 example <- function() {}

@@ -55,6 +55,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     postLocJoint<-NULL
 
     cl <- buildCluster(c('postLocJointPath', 'prefix', 'devices', 'readPostLocProb') , env=environment())
+    clusterSetRNGStream(cl, iseed=123)
     ichunks <- clusterSplit(cl, 1:ndevices)
     res <-
         clusterApplyLB(
@@ -93,7 +94,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     
     
     postLoc <- postLocJoint[ ,list(locProb = sum(eventLoc)), by = .(device, tile_from, time_from)]
-    #rm(postLocJoint)
+    rm(postLocJoint)
     
     postLocReg <- merge(
         postLoc,
@@ -105,7 +106,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     
     postCondLocReg <- postLocJointReg[
         postLocReg, on = .(device, region_from, time_from)][ , prob := eventLoc / locProb][, .(device, time_from, time_to, region_from, region_to, prob)]
-    #rm(postLocJointReg)
+    rm(postLocJointReg)
     
     dedupProbs2_1_Reg <- merge(
         postCondLocReg, dupProbs[, deviceID := as.numeric(deviceID)], 
@@ -133,7 +134,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     ichunks <- clusterSplit(cl, time_from)
     cellNames<-sort(unlist(unique(regions[,2])))
     n<-n
-    setnames(dedupProbsReg, c('region_from', 'region_to'), c('cell_from', 'cell_to'))
+    #setnames(dedupProbsReg, c('region_from', 'region_to'), c('cell_from', 'cell_to'))
     clusterExport(cl, c('cellNames', 'n', 'time_increment', 'dedupProbsReg'), envir = environment())
     
     res <-
@@ -156,9 +157,9 @@ doOD <- function(ichunks, n, cellNames, time_increment, dedupProbs){
     NnetReg <- dedupProbs[time_from %in% ichunks][
         , rNnetCond_Event(.SD, cellNames = cellNames, n=n ), by = 'time_from', .SDcols = names(dedupProbs)][
             , time_to := time_from + time_increment][
-                , cell_to := as.integer(cell_to)][
-                    , cell_from := as.integer(cell_from)]
-    setcolorder(NnetReg, c('time_from', 'time_to', 'cell_from', 'cell_to', 'Nnet', 'iter'))
+                , region_to := as.integer(region_to)][
+                    , region_from := as.integer(region_from)]
+    setcolorder(NnetReg, c('time_from', 'time_to', 'region_from', 'region_to', 'Nnet', 'iter'))
     return(NnetReg)
 }
 
