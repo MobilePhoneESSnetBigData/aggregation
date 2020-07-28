@@ -13,6 +13,8 @@ nIndividuals(categories)
 The sum of the multinomial variates.
 }
 \description{
-Computes the number of individuals as a sum of multinomial varibales. It is an internal function that is
-  called during the process of generating the Poisson multinomial distributed random values.
+Computes the number of individuals as a sum of multinomial
+  varibales. It is an internal function that is called during the process of
+  generating the Poisson multinomial distributed random values. This function
+  cannot be directly called by the users.
 }

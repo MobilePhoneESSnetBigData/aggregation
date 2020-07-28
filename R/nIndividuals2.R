@@ -1,8 +1,11 @@
-#' @title Computes the number of individuals moving from a region to another as a sum of multinomial variables.
+#' @title Computes the number of individuals moving from a region to another as
+#'   a sum of multinomial variables.
 #'
-#' @description Computes the number of individuals moving from a region to another as a sum of multinomial varibales. It
-#'   is an internal function that is called during the process of generating the Poisson multinomial distributed random
-#'   values.
+#' @description Computes the number of individuals moving from a region to
+#'   another as a sum of multinomial varibales. It is an internal function that
+#'   is called during the process of generating the Poisson multinomial
+#'   distributed random values. This function cannot be directly called by
+#'   users.
 #'
 #' @param categories a list of categories in the form \code{region-devCount}.
 #'

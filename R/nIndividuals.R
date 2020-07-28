@@ -1,7 +1,9 @@
 #' @title Computes the number of individuals as a sum of multinomial varibales.
 #'
-#' @description Computes the number of individuals as a sum of multinomial varibales. It is an internal function that is
-#'   called during the process of generating the Poisson multinomial distributed random values.
+#' @description Computes the number of individuals as a sum of multinomial
+#'   varibales. It is an internal function that is called during the process of
+#'   generating the Poisson multinomial distributed random values. This function
+#'   cannot be directly called by the users.
 #'
 #' @param categories a list of categories in the form \code{region-devCount}.
 #'

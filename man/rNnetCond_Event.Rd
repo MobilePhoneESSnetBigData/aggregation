@@ -2,19 +2,23 @@
 % Please edit documentation in R/rNnetCond_Event.R
 \name{rNnetCond_Event}
 \alias{rNnetCond_Event}
-\title{Generates random values from a Poisson multinomial distribution needed for the origin destination matrices.}
+\title{Generates random values from a Poisson multinomial distribution needed
+  for the origin destination matrices.}
 \usage{
 rNnetCond_Event(n, prob.dt, cellNames)
 }
 \arguments{
 \item{n}{The number of random values to generate.}
 
-\item{prob.dt}{A data.table object with the following columns:\code{device, cell, devCount, prob}.}
+\item{prob.dt}{A data.table object with the following columns:\code{device,
+cell, devCount, prob}.}
 }
 \value{
-A matrix object with the random values generated according to a Poisson multinomial distribution.
+A matrix object with the random values generated according to a
+  Poisson multinomial distribution.
 }
 \description{
-Generates random values from a Poisson multinomial distribution needed for the origin destination
-  matrices. This function is only called internally.
+Generates random values from a Poisson multinomial distribution
+  needed for the origin destination matrices. This function is only called
+  internally and it cannot by called directly by users.
 }

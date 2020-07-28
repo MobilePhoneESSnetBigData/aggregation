@@ -1,12 +1,24 @@
-#'@title Builds the table with joint posterior location probabilities from simulated data.
+#'@title Builds the table with joint posterior location probabilities from
+#'  simulated data.
 #'
-#'@param simFileName
+#'@description This is a utility function with the purpose to build the files
+#'  with joint posterior location probabilities for each device using the
+#'  \code{destim} package an a series of additional data. This function was used
+#'  to build the example data set included in this package The raw data were
+#'  produced using the simulation softyware. The joint posterior location
+#'  probabilities file names starts with postLocJointProbDevice_ followed for
+#'  the deviceID and the extension .csv.
 #'
-#'@param gridFileName
+#'@param path The path of the directory where the outfiles are saved.
 #'
-#'@param eventsFileName
+#'@param simFileName The name of the file with the general simulation parameters.
+#'  parameters.
 #'
-#'@param signalFileName
+#'@param gridFileName The name of the file with the grid parameters.
+#'
+#'@param eventsFileName The name of the file containing the networks events.
+#'
+#'@param signalFileName The name of the file with the signal strengh/quality.
 #'
 #'
 #'@import data.table

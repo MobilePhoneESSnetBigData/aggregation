@@ -1,13 +1,17 @@
-#' @title Generates random values from a Poisson multinomial distribution needed for the origin destination matrices.
+#' @title Generates random values from a Poisson multinomial distribution needed
+#'   for the origin destination matrices.
 #'
-#' @description Generates random values from a Poisson multinomial distribution needed for the origin destination
-#'   matrices. This function is only called internally.
+#' @description Generates random values from a Poisson multinomial distribution
+#'   needed for the origin destination matrices. This function is only called
+#'   internally and it cannot by called directly by users.
 #'
 #' @param n The number of random values to generate.
 #'
-#' @param prob.dt A data.table object with the following columns:\code{device, cell, devCount, prob}.
+#' @param prob.dt A data.table object with the following columns:\code{device,
+#'   cell, devCount, prob}.
 #'
-#' @return A matrix object with the random values generated according to a Poisson multinomial distribution.
+#' @return A matrix object with the random values generated according to a
+#'   Poisson multinomial distribution.
 #'
 #' @import data.table
 #' @import extraDistr

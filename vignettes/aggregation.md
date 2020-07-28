@@ -1,7 +1,7 @@
 ---
 title: "Introduction to aggregation package"
 author: "Bogdan Oancea"
-date: "`r Sys.Date()`"
+date: "2020-07-28"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -10,12 +10,7 @@ vignette: >
 bibliography: references.bib  
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+
 
 This vignette contains a short introduction to *aggregation* package. It describes its main purpose, presents some technical details of its implementation and provide examples on how to use this package. Some basic knowledge about *destim* and *deduplication* packages would be useful to understand how this package works. A detailed description of the methodological approach implemented by this package can be found in @WP5Deliverable1.3 and in @bmc_paper. To fully understand the theory behind this package it is recommended to read the above mentioned papers.
 
@@ -61,23 +56,40 @@ the name prefix of these files and optionally a vector with the values of time i
 
 The duplicity file is a simple .csv file which is the main result of the *deduplication* package. It is a simple table with two columns: deviceID and duplicityProbability:
 
-```{r}
+
+```r
 dupProb <- read.csv(file = system.file('extdata/duplicity.csv', package = 'aggregation'))
 head(dupProb)
+#>   deviceID       dupP
+#> 1       73 0.00000000
+#> 2       78 1.00000000
+#> 3       79 1.00000000
+#> 4       83 0.05141439
+#> 5       85 0.00000000
+#> 6       90 0.06842542
 ```
 
 The regions file is also a simple .csv file defined by the user. It contains two columns: the tile number and the region number. Normally, all tiles in the grid should by part of a region.
 
-```{r}
+
+```r
 regions <- read.csv(file = system.file('extdata/regions.csv', package = 'aggregation'))
 head(regions)
+#>   tile region
+#> 1 1560      3
+#> 2 1561      3
+#> 3 1562      3
+#> 4 1563      3
+#> 5 1564      3
+#> 6 1565      3
 ```
 
 The third parameter that should be passed to this function is the path where the the files with the posterior location probabilities are found. There should be one file for each device in the whole wet of devices. A file contains a matrix with the posterior location probabilities for a device: the number of rows equals the number of tiles in the grid and the number of columns equals the number of time instants. The name of each file is composed by a concatenation of a prefix (passed  as a parameter) and the character "_" folowe by the device ID. The file extension is .csv.
 
 Below we show a simple example how to use this function and its result.
 
-```{r eval = FALSE}
+
+```r
 # set the folder where the necessary input files are stored
 path      <- 'extdata'
 
@@ -112,7 +124,8 @@ head(nNet)
 ```
 The result nNet is a data.table object with 3 columns: time, region, N. For each distinct combination of time-region this table contains n randomly generated values. Onr can use the mean, mode or meadiqan to obtain an estimation of the number of individuals at each time instants in each region. Below is an example how to do this.
 
-```{r eval = FALSE}
+
+```r
 # print the mean number of detected individuals for each region, for each time instant
 regions <- as.numeric(unique(nNet$region))
 times <- unique(nNet$time)
@@ -152,7 +165,8 @@ which is distributed according to a multinomial-Poisson distribution. We use aga
 
 Again, the *aggregation* package provieds a single function to generate random variates that can be used then to compute an estimation of the number of individuals moving from one region to another. The parameters of this function are: the number of the random values to be generated, the file with the duplicity probabilities for each device, the file defining the geographical regions where we intend to aggregate the number of individuals, the path to the directory where the files with the posterior joint location probabilities for each device are found and the name prefix of these files. The files contaning the joint probabilities are also a result of the *destim* package. We provide a complete set of files with example data in the *extdata* folder of this package. The raw data used to produce these files are given by our simulation software.
 
-```{r eval = FALSE}
+
+```r
 # For the origin-destination matrix we proceed as follows
 # set the folder where the necessary input files are stored
 path      <- 'extdata'
@@ -188,7 +202,8 @@ For each pair(time_from-time_to, region_from-region_to) there are *n* random val
 
 The following code shows how to compute the the origin-destination matrix for the time interval (0,10).
 
-```{r eval = FALSE}
+
+```r
 t_from <-0
 t_to <- 10
 

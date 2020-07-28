@@ -2,7 +2,8 @@
 % Please edit documentation in R/nIndividuals2.R
 \name{nIndividuals2}
 \alias{nIndividuals2}
-\title{Computes the number of individuals moving from a region to another as a sum of multinomial variables.}
+\title{Computes the number of individuals moving from a region to another as
+  a sum of multinomial variables.}
 \usage{
 nIndividuals2(categories, cellNames)
 }
@@ -15,7 +16,9 @@ nIndividuals2(categories, cellNames)
 The sum of the multinomial variates.
 }
 \description{
-Computes the number of individuals moving from a region to another as a sum of multinomial varibales. It
-  is an internal function that is called during the process of generating the Poisson multinomial distributed random
-  values.
+Computes the number of individuals moving from a region to
+  another as a sum of multinomial varibales. It is an internal function that
+  is called during the process of generating the Poisson multinomial
+  distributed random values. This function cannot be directly called by
+  users.
 }

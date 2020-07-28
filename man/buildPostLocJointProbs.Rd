@@ -2,7 +2,8 @@
 % Please edit documentation in R/buildPostLocJointProbs.R
 \name{buildPostLocJointProbs}
 \alias{buildPostLocJointProbs}
-\title{Builds the table with joint posterior location probabilities from simulated data.}
+\title{Builds the table with joint posterior location probabilities from
+ simulated data.}
 \usage{
 buildPostLocJointProbs(
   path,
@@ -13,14 +14,23 @@ buildPostLocJointProbs(
 )
 }
 \arguments{
-\item{simFileName}{}
+\item{path}{The path of the directory where the outfiles are saved.}
 
-\item{gridFileName}{}
+\item{simFileName}{The name of the file with the general simulation parameters.
+parameters.}
 
-\item{eventsFileName}{}
+\item{gridFileName}{The name of the file with the grid parameters.}
 
-\item{signalFileName}{}
+\item{eventsFileName}{The name of the file containing the networks events.}
+
+\item{signalFileName}{The name of the file with the signal strengh/quality.}
 }
 \description{
-Builds the table with joint posterior location probabilities from simulated data.
+This is a utility function with the purpose to build the files
+ with joint posterior location probabilities for each device using the
+ \code{destim} package an a series of additional data. This function was used
+ to build the example data set included in this package The raw data were
+ produced using the simulation softyware. The joint posterior location
+ probabilities file names starts with postLocJointProbDevice_ followed for
+ the deviceID and the extension .csv.
 }

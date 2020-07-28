@@ -1,30 +1,46 @@
-#' @title Generates random values according to a Poisson multinomial probability distribution.
+#' @title Generates random values according to a Poisson multinomial probability
+#'   distribution.
 #'
-#' @description Generates random values according to a Poisson multinomial probability distribution. A point estimation
-#'   derived from this distribution (mean, mode) represents an estimation of the number of individuals detected by the
-#'   network in a region. Regions are composed as a number of adjacent tiles.
+#' @description Generates random values according to a Poisson multinomial
+#'   probability distribution. A point estimation derived from this distribution
+#'   (mean, mode) represents an estimation of the number of individuals detected
+#'   by the network in a region. Regions are composed as a number of adjacent
+#'   tiles. This is the only one function of this package available to users to
+#'   compute an estimation of the number of detected individuals.
 #'
 #' @param n The number of random values to be generated.
 #'
-#' @param dupFileName The name of the .csv file with the duplicity probability for each device. This is an output of the
-#'   \code{deduplication} package.
+#' @param gridFileName The name of the .csv file with the grid parameters.
 #'
-#' @param regsFileName The name of the .csv file defining the regions. It has two columns: \code{ tile, region}. The
-#'   first column contains the IDs of each tile in the grid while the second contains the number of a region. This file
-#'   is defined by the user and it can be created with any text editor.
+#' @param dupFileName The name of the .csv file with the duplicity probability
+#'   for each device. This is an output of the \code{deduplication} package.
 #'
-#' @param postLocPath The path where the files with the posterior location probabilities for each device can be found.
-#'   A file with the location probabilities should have the name \code{prefix_ID.csv} where \code{ID} is replaced
-#'   with the device ID and \code{prefix} is given as a parameter to this function.
+#' @param regsFileName The name of the .csv file defining the regions. It has
+#'   two columns: \code{ tile, region}. The first column contains the IDs of
+#'   each tile in the grid while the second contains the number of a region.
+#'   This file is defined by the user and it can be created with any text
+#'   editor.
 #'
-#' @param prefix A prefix that is used to compose the file name with posterior location probabilities.
-#' 
-#' @param times An optional vector with the time instants when the events were registered. If it is not provided, in the
-#'   output, the succesive time instants will be represented by thier index (starting from 1).
+#' @param postLocPath The path where the files with the posterior location
+#'   probabilities for each device can be found. A file with the location
+#'   probabilities should have the name \code{prefix_ID.csv} where \code{ID} is
+#'   replaced with the device ID and \code{prefix} is given as a parameter to
+#'   this function.
 #'
+#' @param prefix A prefix that is used to compose the file name with posterior
+#'   location probabilities.
+#'
+#' @param times An optional vector with the time instants when the events were
+#'   registered. If it is not provided, in the output, the succesive time
+#'   instants will be represented by thier index (starting from 1).
+#'
+#' @return A data.table object with the following columns: \code{time, region,
+#'   N, iter}. The last column contains the index of the random value (given in
+#'   column \code{N}) generated for each time instant and region.
 #'
 #' @import data.table
 #' @import deduplication
+#' @import  parallel
 #' @include doAggr.R
 #' @export
 rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, prefix, times = NULL) {
