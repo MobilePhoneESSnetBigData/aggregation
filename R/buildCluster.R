@@ -29,6 +29,8 @@ buildCluster <- function(varlist, env) {
     cl <- makeCluster(detectCores())
     clusterEvalQ(cl, library("data.table"))
     clusterEvalQ(cl, library("extraDistr"))
+    clusterEvalQ(cl, library("deduplication"))
+    clusterEvalQ(cl, library("Matrix"))
     clusterExport(cl, varlist, envir = env)
   }
   return (cl)

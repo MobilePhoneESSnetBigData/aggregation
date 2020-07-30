@@ -40,8 +40,10 @@
 #'@import deduplication
 #'@import parallel
 #'
+#' @include rNnetJoint_Event.R
+#'
 #'@export
-rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
+rNnetEventOD <- function(n, dupFileName, regsFileName, postLocJointPath, prefix, seed = 123) {
     
     if (!file.exists(dupFileName))
         stop(paste0(dupFileName, " does not exists!"))
@@ -66,9 +68,9 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     
     ndevices <- nrow(dupProbs)
     postLocJoint<-NULL
-
+    
     cl <- buildCluster(c('postLocJointPath', 'prefix', 'devices', 'readPostLocProb') , env=environment())
-    clusterSetRNGStream(cl, iseed=123)
+    clusterSetRNGStream(cl, iseed=seed)
     ichunks <- clusterSplit(cl, 1:ndevices)
     res <-
         clusterApplyLB(
@@ -83,7 +85,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
         res[[i]]<-as.data.table(as.matrix(res[[i]]))
     result <- rbindlist(res)
     
-
+    
     postLocJoint <- as.data.table(as.matrix(result))
     setnames(postLocJoint, c('device', 'time_from', "time_to", "tile_from", "tile_to", "eventLoc"))
     
@@ -103,26 +105,10 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
         by.x = 'tile_to', by.y = 'tile')
     setnames(postLocJointReg, 'region', 'region_to')
     
-    postLocJointReg <- postLocJointReg[, list(eventLoc = sum(eventLoc)), by = .(device, time_from, time_to, region_from, region_to)]
-    
-    
-    postLoc <- postLocJoint[ ,list(locProb = sum(eventLoc)), by = .(device, tile_from, time_from)]
-    rm(postLocJoint)
-    
-    postLocReg <- merge(
-        postLoc,
-        regions,
-        by.x = 'tile_from', by.y = 'tile')
-    setnames(postLocReg, 'region', 'region_from')
-    
-    postLocReg <- postLocReg[ , list(locProb = sum(locProb)), by = .(device, time_from, region_from)]
-    
-    postCondLocReg <- postLocJointReg[
-        postLocReg, on = .(device, region_from, time_from)][ , prob := eventLoc / locProb][, .(device, time_from, time_to, region_from, region_to, prob)]
-    rm(postLocJointReg)
+    postLocJointReg <- postLocJointReg[, list(prob = sum(eventLoc)), by = .(device, time_from, time_to, region_from, region_to)]
     
     dedupProbs2_1_Reg <- merge(
-        postCondLocReg, dupProbs[, deviceID := as.numeric(deviceID)], 
+        postLocJointReg, dupProbs[, deviceID := as.numeric(deviceID)], 
         by.x = 'device', by.y = 'deviceID', all.x = TRUE)
     
     dedupProbs1_1_Reg <- copy(dedupProbs2_1_Reg)[
@@ -142,7 +128,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     dedupProbsReg <- rbindlist(
         list(dedupProbs1_1_Reg, dedupProbs2_1_Reg))
     rm(dedupProbs1_1_Reg, dedupProbs2_1_Reg)
-
+    
     time_from <- unique(unlist(dedupProbsReg[,time_from]))
     ichunks <- clusterSplit(cl, time_from)
     cellNames<-sort(unlist(unique(regions[,2])))
@@ -154,7 +140,7 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
         clusterApplyLB(
             cl,
             ichunks,
-            doOD,
+            doOD2,
             n,
             cellNames,
             time_increment,
@@ -165,10 +151,10 @@ rNnetEventOD<-function(n, dupFileName, regsFileName, postLocJointPath, prefix) {
     return(result)
 }
 
-doOD <- function(ichunks, n, cellNames, time_increment, dedupProbs){
-
+doOD2 <- function(ichunks, n, cellNames, time_increment, dedupProbs){
+    
     NnetReg <- dedupProbs[time_from %in% ichunks][
-        , rNnetCond_Event(.SD, cellNames = cellNames, n=n ), by = 'time_from', .SDcols = names(dedupProbs)][
+        , aggregation::rNnetJoint_Event(.SD, cellNames = cellNames, n=n ), by = 'time_from', .SDcols = names(dedupProbs)][
             , time_to := time_from + time_increment][
                 , region_to := as.integer(region_to)][
                     , region_from := as.integer(region_from)]

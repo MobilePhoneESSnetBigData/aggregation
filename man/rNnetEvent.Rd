@@ -12,7 +12,8 @@ rNnetEvent(
   regsFileName,
   postLocPath,
   prefix,
-  times = NULL
+  times,
+  seed = 123
 )
 }
 \arguments{
@@ -38,9 +39,10 @@ this function.}
 \item{prefix}{A prefix that is used to compose the file name with posterior
 location probabilities.}
 
-\item{times}{An optional vector with the time instants when the events were
-registered. If it is not provided, in the output, the succesive time
-instants will be represented by thier index (starting from 1).}
+\item{times}{A vector with the time instants when the events were
+registered.}
+
+\item{seed}{The value of the random seed to be used by the random number generator.}
 }
 \value{
 A data.table object with the following columns: \code{time, region,

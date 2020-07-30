@@ -5,7 +5,14 @@
 \title{Generates random value according to a Poisson multinomial distribution
  needed to estimate the origin destination matrices.}
 \usage{
-rNnetEventOD(n, dupFileName, regsFileName, postLocJointPath, prefix)
+rNnetEventOD(
+  n,
+  dupFileName,
+  regsFileName,
+  postLocJointPath,
+  prefix,
+  seed = 123
+)
 }
 \arguments{
 \item{n}{The number of random values to be generated.}

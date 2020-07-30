@@ -28,6 +28,8 @@ Collate:
     'example.R'
     'nIndividuals.R'
     'nIndividuals2.R'
+    'nIndividuals3.R'
     'rNnetCond_Event.R'
     'rNnetEvent.R'
+    'rNnetJoint_Event.R'
     'rNnetEventOD.R'

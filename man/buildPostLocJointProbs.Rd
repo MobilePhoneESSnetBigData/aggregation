@@ -23,14 +23,14 @@ parameters.}
 
 \item{eventsFileName}{The name of the file containing the networks events.}
 
-\item{signalFileName}{The name of the file with the signal strengh/quality.}
+\item{signalFileName}{The name of the file with the signal strength/quality.}
 }
 \description{
 This is a utility function with the purpose to build the files
  with joint posterior location probabilities for each device using the
  \code{destim} package an a series of additional data. This function was used
  to build the example data set included in this package The raw data were
- produced using the simulation softyware. The joint posterior location
- probabilities file names starts with postLocJointProbDevice_ followed for
- the deviceID and the extension .csv.
+ produced using the simulation software. The joint posterior location
+ probabilities file names starts with \code{postLocJointProbDevice_} followed for
+ the \code{deviceID} and the extension \code{.dt.csv}.
 }

@@ -49,9 +49,10 @@ rNnetCond_Event <- function(n, prob.dt, cellNames){
       , lapply(.SD, nIndividuals2, cellNames = cellNames), .SDcols = names(DT)[-(1:2)]]
     x4.dt <- data.table(t(as.matrix(x4)))
     setnames(x4.dt, as.character(cellNames))
+    
     x4_molten.dt <- melt(x4.dt[
       , region_from := region_from], id.vars = 'region_from', 
-      variable.name = 'region_to', value.name = 'Nnet', variable.factor = FALSE)
+      variable.name = 'region_to', value.name = 'N', variable.factor = FALSE)
     x4_molten.dt
   })
 

@@ -57,7 +57,7 @@ The random variable $\mathbf{N}^{(\textrm{net})}_{t}$ is a Poisson multinomial d
 
 
 The *aggregation* package provides a single function to generate random variates according to the Poisson multinomial distribution: *rNnetEvent()*. Thus, all the details about intermediate computations are hidden from the users. The input data needed by this function are: the number of the random values to be generated, the file with the duplicity probabilities for each device, the file defining the geographical regions where we intend to aggregate the number of individuals, the path to the directory where the files with the posterior location probabilities for each device are found,
-the name prefix of these files and optionally a vector with the values of time instants. If this optional vector is not provided, the result will be indexed by $1 ... T$ where $T$ is the number of time steps. We provide a complete set of files with example data in the *extdata* folder of this package. The raw data used to produce these files are given by our simulation software.
+the name prefix of these files and a vector with the values of time instants. There is also an optional argument, the seed needed to initialize the random number generator. In the example below we use the default value of this argument. We provide a complete set of files with example data in the *extdata* folder of this package. The raw data used to produce these files are given by our simulation software.
 
 The duplicity file is a simple .csv file which is the main result of the *deduplication* package. It is a simple table with two columns: deviceID and duplicityProbability:
 
@@ -73,7 +73,8 @@ regions <- read.csv(file = system.file('extdata/regions.csv', package = 'aggrega
 head(regions)
 ```
 
-The third parameter that should be passed to this function is the path where the the files with the posterior location probabilities are found. There should be one file for each device in the whole wet of devices. A file contains a matrix with the posterior location probabilities for a device: the number of rows equals the number of tiles in the grid and the number of columns equals the number of time instants. The name of each file is composed by a concatenation of a prefix (passed  as a parameter) and the character "_" folowe by the device ID. The file extension is .csv.
+The third parameter that should be passed to this function is the path where the files with the posterior location probabilities are found. There should be one file for each device in the whole wet of devices. A file contains a table with the posterior location probabilities for a device. It has three columns: tile, time, probL. It contains only the entries corresponding to nonzero values of the posterior location probability (probL column).
+The file extension is .csv.
 
 Below we show a simple example how to use this function and its result.
 
@@ -82,6 +83,14 @@ Below we show a simple example how to use this function and its result.
 path      <- 'extdata'
 
 prefix = 'postLocDevice'
+
+# get the series of time instants from the simulation.xml file. 
+simParams <-deduplication::readSimulationParams(system.file(path, 'simulation.xml', package = 'aggregation'))
+time_from <- simParams$start_time
+time_to <- simParams$end_time
+time_incr <- simParams$time_increment
+times<-seq(from=time_from, to=time_to-time_incr, by = time_incr)
+
 
 # set the duplicity probabilities file name, i.e. the file with duplicity probability for each device
 dpFile <- system.file(path, 'duplicity.csv', package = 'aggregation')
@@ -96,7 +105,7 @@ pathLoc <- system.file(path, package = 'aggregation')
 # set the number of random values to be generated
 n <- 1e3
 # call rNnetEvent
-nNet <- rNnetEvent(n, dpFile, rgFile, pathLoc, prefix)
+nNet <- rNnetEvent(n, dpFile, rgFile, pathLoc, prefix, times = times)
 
 head(nNet)
 ```
@@ -110,7 +119,7 @@ head(nNet)
 5:    1      1 10    5
 6:    1      1 12    6
 ```
-The result nNet is a data.table object with 3 columns: time, region, N. For each distinct combination of time-region this table contains n randomly generated values. Onr can use the mean, mode or meadiqan to obtain an estimation of the number of individuals at each time instants in each region. Below is an example how to do this.
+The result nNet is a data.table object with 3 columns: time, region, N. For each distinct combination of time-region this table contains n randomly generated values. One can use the mean, mode or median to obtain an estimation of the number of individuals at each time instants in each region. Below is an example how to do this.
 
 ```{r eval = FALSE}
 # print the mean number of detected individuals for each region, for each time instant
@@ -120,7 +129,7 @@ times <- unique(nNet$time)
 for(r in regions) {
     print(paste0("region: ", r))
     for(t in times) {
-        print(paste0("time instant: ", t, " number of individuals: " , mean(nNet[region == r][time ==t]$N)))
+        print(paste0("time instant: ", t, " number of individuals: " , round(mean(nNet[region == r][time ==t]$N))))
     }
 }
 ```
@@ -150,7 +159,7 @@ which is distributed according to a multinomial-Poisson distribution. We use aga
 
 ## The *rNnetEventOD()* function.
 
-Again, the *aggregation* package provieds a single function to generate random variates that can be used then to compute an estimation of the number of individuals moving from one region to another. The parameters of this function are: the number of the random values to be generated, the file with the duplicity probabilities for each device, the file defining the geographical regions where we intend to aggregate the number of individuals, the path to the directory where the files with the posterior joint location probabilities for each device are found and the name prefix of these files. The files contaning the joint probabilities are also a result of the *destim* package. We provide a complete set of files with example data in the *extdata* folder of this package. The raw data used to produce these files are given by our simulation software.
+Again, the *aggregation* package provieds a single function to generate random variates that can be used then to compute an estimation of the number of individuals moving from one region to another. The parameters of this function are: the number of the random values to be generated, the file with the duplicity probabilities for each device, the file defining the geographical regions where we intend to aggregate the number of individuals, the path to the directory where the files with the posterior joint location probabilities for each device are found and the name prefix of these files. There is also an optional argument, the seed needed to initialize the random number generator. In the example below we use the default value of this argument. The files containing the joint probabilities are also a result of the *destim* package. We provide a complete set of files with example data in the *extdata* folder of this package. The raw data used to produce these files are given by our simulation software.
 
 ```{r eval = FALSE}
 # For the origin-destination matrix we proceed as follows
@@ -162,7 +171,7 @@ prefixJ <- 'postLocJointProbDevice'
 # set the duplicity probabilities file name, i.e. the file with duplicity probability for each device
 dpFile<-system.file(path, 'duplicity.csv', package = 'aggregation')
 
-# set the regions file name, i.e. the file defining the regions for wich we need the estimation of the number
+# set the regions file name, i.e. the file defining the regions for which we need the estimation of the number
 # of individuals detected by network.
 rgFile<-system.file(path, 'regions.csv', package = 'aggregation')
 

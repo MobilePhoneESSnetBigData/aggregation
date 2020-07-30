@@ -12,9 +12,8 @@
 #'
 #' @param  n The number of random values to be generated.
 #'
-#' @param nTiles The number of tiles in the grid.
 #'
-#' @param tiles The list of tile indexes in raster format.
+#' @param tiles The list of tile indexes.
 #'
 #' @param postLoc A list with posterior location probabilities matrices. Each
 #'   element of the list corresponds to a device.
@@ -36,26 +35,26 @@
 #' @import data.table
 #' @import deduplication
 #' @include rNnet_Event.R
-doAggr <- function(ichunks, n, nTiles, tiles, postLoc, dupProbs, regions) {
+doAggr <- function(ichunks, n, tiles, postLoc, dupProbs, regions) {
   nIndividualsT <- list(length=length(ichunks))
   k<-1
+  nTiles <- length(tiles)
   devices<-sort(as.numeric(dupProbs[,1][[1]]))
   ndevices <- length(devices)
   for(t in ichunks) {
     dedupLoc <- data.table()
     for(j in 1:ndevices) {
-      x <- cbind(tiles, as.matrix(postLoc[[j]])[,t], rep(devices[j], times = nTiles))
+      x <- cbind(tiles, postLoc[[j]][,t], rep(devices[j], times = nTiles))
       dedupLoc <- rbind(dedupLoc, x)
       x <- NULL
     }
-    colnames(dedupLoc)<-c('tile', 'eventLoc', 'device')
+    colnames(dedupLoc)<-c('tile', 'postL', 'device')
     dedupLoc2_1 <- merge(dedupLoc, dupProbs, by.x = 'device', by.y = 'deviceID', all.x = TRUE)
     dedupLoc1_1 <- copy(dedupLoc2_1)[ , singleP := 1- dupP][, dupP := NULL]
-    dedupLoc2_1[,prob := eventLoc * dupP][, devCount := 0.5][, eventLoc := NULL][,dupP := NULL]
-    dedupLoc1_1[,prob := eventLoc * singleP][, devCount := 1][, eventLoc := NULL] [, singleP := NULL]
+    dedupLoc2_1[,prob := postL * dupP][, devCount := 0.5][, postL := NULL][,dupP := NULL]
+    dedupLoc1_1[,prob := postL * singleP][, devCount := 1][, postL := NULL] [, singleP := NULL]
     dedupProbs <- rbind(dedupLoc1_1, dedupLoc2_1)
-    rm(dedupLoc2_1)
-    rm(dedupLoc1_1)
+    rm(dedupLoc2_1, dedupLoc1_1)
     dedupProbs <- merge( dedupProbs, regions, by = c('tile'))
     dedupProbs <- dedupProbs[ ,list(prob = sum(prob)), by = c('device', 'region', 'devCount')]
     nIndividuals_MNO <- as.data.table(rNnet_Event(n, dedupProbs))

@@ -31,7 +31,7 @@ nIndividuals2 <- function(categories, cellNames){
     cell <- catPerDevice[dev_index, 1]
     devCount <- catPerDevice[dev_index, 2]
     tempVec <- numeric(length(cellNames))
-    names(tempVec) <- as.character(cells)
+    names(tempVec) <- as.character(cellNames)
     tempVec[as.character(cell)] <- devCount
     output <- output + tempVec    
   }

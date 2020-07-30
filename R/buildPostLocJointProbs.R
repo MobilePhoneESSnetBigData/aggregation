@@ -5,9 +5,9 @@
 #'  with joint posterior location probabilities for each device using the
 #'  \code{destim} package an a series of additional data. This function was used
 #'  to build the example data set included in this package The raw data were
-#'  produced using the simulation softyware. The joint posterior location
-#'  probabilities file names starts with postLocJointProbDevice_ followed for
-#'  the deviceID and the extension .csv.
+#'  produced using the simulation software. The joint posterior location
+#'  probabilities file names starts with \code{postLocJointProbDevice_} followed for
+#'  the \code{deviceID} and the extension \code{.dt.csv}.
 #'
 #'@param path The path of the directory where the outfiles are saved.
 #'
@@ -18,7 +18,7 @@
 #'
 #'@param eventsFileName The name of the file containing the networks events.
 #'
-#'@param signalFileName The name of the file with the signal strengh/quality.
+#'@param signalFileName The name of the file with the signal strength/quality.
 #'
 #'
 #'@import data.table
@@ -58,7 +58,7 @@ buildPostLocJointProbs <-function(path, simFileName, gridFileName, eventsFileNam
         out[,rasterCell_from:=NULL]
         out[,rasterCell_to:=NULL]
         out[,device:=NULL]
-        write.table(out, file=paste0(path, "/postLocJointProbDevice_", devices[j],".csv"), sep=",", row.names = FALSE, col.names = FALSE)
+        write.table(out, file=paste0(path, "/postLocJointProbDevice_", devices[j],".dt.csv"), sep=",", row.names = FALSE)
     }
 }
 
@@ -80,7 +80,7 @@ transform_postLocJointProb <- function(postJointLocP,
         postJointLocP0 <- as(postJointLocP0, "dgTMatrix")
         postJointLocP.dt <- data.table(rasterCell_from = postJointLocP0@i+1, 
                                        j = postJointLocP0@j+1, 
-                                       eventLoc = postJointLocP0@x)
+                                       probL = postJointLocP0@x)
         postJointLocP.dt <- postJointLocP.dt[, time_from := floor((j - 1) / ntiles) + 1][, rasterCell_to := j - ((time_from - 1) * ntiles)]
         postJointLocP.dt <- postJointLocP.dt[, j := NULL]
         
@@ -108,14 +108,14 @@ transform_postLocJointProb <- function(postJointLocP,
             postJointLocP.dt <- merge(allTilesTimes, postJointLocP.dt, 
                                       all.x = TRUE, by = intersect(names(allTilesTimes), names(postJointLocP.dt)))
             rm(allTilesTimes)
-            postJointLocP.dt[is.na(eventLoc), eventLoc := 0]
+            postJointLocP.dt[is.na(probL), probL := 0]
             
         }
         
         postJointLocP.dt <- postJointLocP.dt[, time_to := time_from + t_increment]
-        postJointLocP.dt[eventLoc<0, eventLoc := 0]
+        postJointLocP.dt[probL<0, probL := 0]
         setcolorder(postJointLocP.dt, c('time_from', 'time_to', 'tile_from', 'tile_to', 
-                                        'eventLoc', 'device', 'rasterCell_from', 'rasterCell_to'))
+                                        'probL', 'device', 'rasterCell_from', 'rasterCell_to'))
         
     }
     

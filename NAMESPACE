@@ -3,6 +3,7 @@
 export(buildPostLocJointProbs)
 export(rNnetEvent)
 export(rNnetEventOD)
+export(rNnetJoint_Event)
 import(Matrix)
 import(data.table)
 import(deduplication)

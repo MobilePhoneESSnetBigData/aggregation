@@ -5,16 +5,14 @@
 \title{Generates a sequence of Poisson multinomial random values for a
   sequence of time instants.}
 \usage{
-doAggr(ichunks, n, nTiles, tiles, postLoc, dupProbs, regions)
+doAggr(ichunks, n, tiles, postLoc, dupProbs, regions)
 }
 \arguments{
 \item{ichunks}{A partition of time instants.}
 
 \item{n}{The number of random values to be generated.}
 
-\item{nTiles}{The number of tiles in the grid.}
-
-\item{tiles}{The list of tile indexes in raster format.}
+\item{tiles}{The list of tile indexes.}
 
 \item{postLoc}{A list with posterior location probabilities matrices. Each
 element of the list corresponds to a device.}

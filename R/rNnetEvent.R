@@ -30,9 +30,10 @@
 #' @param prefix A prefix that is used to compose the file name with posterior
 #'   location probabilities.
 #'
-#' @param times An optional vector with the time instants when the events were
-#'   registered. If it is not provided, in the output, the succesive time
-#'   instants will be represented by thier index (starting from 1).
+#' @param times A vector with the time instants when the events were
+#'   registered. 
+#'
+#' @param seed The value of the random seed to be used by the random number generator.
 #'
 #' @return A data.table object with the following columns: \code{time, region,
 #'   N, iter}. The last column contains the index of the random value (given in
@@ -40,10 +41,12 @@
 #'
 #' @import data.table
 #' @import deduplication
+#' @import Matrix
 #' @import  parallel
 #' @include doAggr.R
+#' @include buildCluster.R
 #' @export
-rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, prefix, times = NULL) {
+rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, prefix, times, seed = 123) {
   # 1. read duplicity probs.
 
   if (!file.exists(gridFileName))
@@ -75,45 +78,56 @@ rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, 
   
   # 3. read posterior location probabilities
   ndevices <- nrow(dupProbs)
-  postLoc<-list(length = ndevices)
-  for( i in 1:ndevices) {
-    postLoc[[i]] <- readPostLocProb(postLocPath, prefix, dupProbs[i,1])
+  postLoc <- NULL
+  ntiles <- gridParams$nrow * gridParams$ncol
+  ntimes <- length(times)
+  timeincr<-times[2]-times[1]
+  prefix <- prefix
+  postLocPath <-postLocPath
+  
+  cl <- buildCluster( c('postLocPath', 'prefix', 'devices', 'ntiles', 'ntimes', 'timeincr') , env=environment() )
+  ich<-clusterSplit(cl, 1:ndevices)
+  res<-clusterApplyLB(cl, ich, doRead1, postLocPath, prefix, devices, ntiles, ntimes, timeincr)
+  for(i in 1:length(res)) {
+    postLoc <- c(postLoc, unlist(res[[i]]))
   }
-  
-  T <- ncol(postLoc[[1]])
-  if(!is.null(times))
-    if(T != length(times))
-      stop("Inconsistent data provided: the length of times vector is not the same as the number of time instants computed from the posterior location probabilities files")
 
-  nTiles <- nrow(postLoc[[1]])
-  eq <- as.data.table(tileEquivalence(gridParams$nrow,gridParams$ncol))
-  tiles<-eq[order(tile)]$rasterCell
+  T <- ncol(postLoc[[1]])
+   if(T != length(times))
+     stop("Inconsistent data provided: the length of times vector is not the same as the number of time instants computed from the posterior location probabilities files")
   
+  tiles <- 0:(ntiles-1)
   # 4. computation begins ...
-  # build cluster
-  cl <- buildCluster(c('postLoc', 'nTiles', 'tiles', 'dupProbs', 'regions') , env=environment())
-  clusterSetRNGStream(cl, iseed=123)
+  clusterExport(cl,  c('dupProbs', 'regions', 'postLoc', 'tiles'), envir=environment())
+  clusterSetRNGStream(cl, iseed=seed)
   ichunks <- clusterSplit(cl, 1:T)
   res <-
-    clusterApplyLB(
-      cl,
-      ichunks,
-      doAggr,
-      n,
-      nTiles,
-      tiles,
-      postLoc,
-      dupProbs,
-      regions
-    )
+     clusterApplyLB(
+       cl,
+       ichunks,
+       doAggr,
+       n,
+       tiles,
+       postLoc,
+       dupProbs,
+       regions
+     )
   stopCluster(cl)
   result <- rbindlist(res)
-  if(!is.null(times)) {
-    indices <- result$time 
-    result$time <- times[indices]
-  }
+  indices <- result$time
+  result$time <- times[indices]
   return (result)
 }
 
 
-
+ doRead1 <- function(ichunks, postLocPath, prefix, devices, ntiles, ntimes, timeincr) {
+    n <- length(ichunks)
+    local_postLoc<-list(length = n)
+    k<-1
+   for( i in ichunks) {
+      tmp <- readPostLocProb(postLocPath, prefix, devices[i])
+      local_postLoc[[k]] <- sparseMatrix(i=tmp$tile, j=(tmp$time)/timeincr, x=tmp$probL, dims=c(ntiles, ntimes), index1=FALSE)
+      k <- k + 1
+    }
+   return (local_postLoc)
+ }
