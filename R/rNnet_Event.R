@@ -12,22 +12,23 @@
 #' @return A matrix object with the random values generated according to a
 #'   Poisson multinomial distribution.
 #'
-#'
+#' @keywords internal
 #' @import data.table
 #' @import extraDistr
+#' @export
 rNnet_Event <- function(n, prob.dt){
-  
-  
+
+
   if (!all(c('device', 'region', 'devCount', 'prob') %in% names(prob.dt))) {
-    
+
     stop('[rNnet_Event] prob.dt must have columns device, cell, devCount, prob.\n')
   }
-  
+
   probSums <- prob.dt[, list(totalProb = sum(prob)), by = 'device']$totalProb
   if (!all(abs(probSums - 1) < 1e-1)) {
     #stop('[rNnet_Event] The sum of probabilities per device is not 1.\n')
   }
-  
+
   x1 <- prob.dt[
       , c('device', 'region', 'devCount', 'prob'), with = FALSE][
         , categories := paste0(region, '-', devCount)]

@@ -8,12 +8,13 @@
 #' @param categories a list of categories in the form \code{region-devCount}.
 #'
 #' @return The sum of the multinomial variates.
-#'
+#' @keywords internal
 #' @import data.table
+#' @export
 nIndividuals <- function(categories){
-  
+
   catPerDevice <- Reduce(rbind, lapply(as.character(categories), function(str) {
-    
+
     as.numeric(strsplit(str, split = '-')[[1]])
   }))
   nDev <- length(categories)
@@ -27,7 +28,7 @@ nIndividuals <- function(categories){
     devCount <- catPerDevice[dev_index, 2]
     tempVec <- numeric(nCells)
     tempVec[cell] <- devCount
-    output <- output + tempVec    
+    output <- output + tempVec
   }
 
   return(output)

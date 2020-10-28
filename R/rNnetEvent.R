@@ -6,7 +6,11 @@
 #'   (mean, mode) represents an estimation of the number of individuals detected
 #'   by the network in a region. Regions are composed as a number of adjacent
 #'   tiles. This is the only one function of this package available to users to
-#'   compute an estimation of the number of detected individuals.
+#'   compute an estimation of the number of detected individuals. For a
+#'   theoretical background an interested reader can find more details
+#'   in the methodological framework available here:
+#'   \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}
+#'
 #'
 #' @param n The number of random values to be generated.
 #'
@@ -31,7 +35,7 @@
 #'   location probabilities.
 #'
 #' @param times A vector with the time instants when the events were
-#'   registered. 
+#'   registered.
 #'
 #' @param seed The value of the random seed to be used by the random number generator.
 #'
@@ -51,12 +55,12 @@ rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, 
 
   if (!file.exists(gridFileName))
     stop(paste0(gridFileName, " does not exists!"))
-  
+
   gridParams <- readGridParams(gridFileName)
-  
+
   if (!file.exists(dupFileName))
     stop(paste0(dupFileName, " does not exists!"))
-  
+
   dupProbs <- fread(
     dupFileName,
     sep = ',',
@@ -64,18 +68,18 @@ rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, 
     stringsAsFactors = FALSE
   )
   devices<-sort(as.numeric(dupProbs[,1][[1]]))
-  
+
   # 2. read regions
   if (!file.exists(regsFileName))
     stop(paste0(regsFileName, " does not exists!"))
-  
+
   regions <- fread(
     regsFileName,
     sep = ',',
     header = TRUE,
     stringsAsFactors = FALSE
   )
-  
+
   # 3. read posterior location probabilities
   ndevices <- nrow(dupProbs)
   postLoc <- NULL
@@ -84,7 +88,7 @@ rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, 
   timeincr<-times[2]-times[1]
   prefix <- prefix
   postLocPath <-postLocPath
-  
+
   cl <- buildCluster( c('postLocPath', 'prefix', 'devices', 'ntiles', 'ntimes', 'timeincr') , env=environment() )
   ich<-clusterSplit(cl, 1:ndevices)
   res<-clusterApplyLB(cl, ich, doRead1, postLocPath, prefix, devices, ntiles, ntimes, timeincr)
@@ -95,7 +99,7 @@ rNnetEvent <- function(n, gridFileName, dupFileName, regsFileName, postLocPath, 
   T <- ncol(postLoc[[1]])
    if(T != length(times))
      stop("Inconsistent data provided: the length of times vector is not the same as the number of time instants computed from the posterior location probabilities files")
-  
+
   tiles <- 0:(ntiles-1)
   # 4. computation begins ...
   clusterExport(cl,  c('dupProbs', 'regions', 'postLoc', 'tiles'), envir=environment())

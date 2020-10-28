@@ -18,3 +18,4 @@ Computes the number of individuals as a sum of multinomial
   generating the Poisson multinomial distributed random values. This function
   cannot be directly called by the users.
 }
+\keyword{internal}

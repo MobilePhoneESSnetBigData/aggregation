@@ -20,7 +20,7 @@
 #'
 #'@param signalFileName The name of the file with the signal strength/quality.
 #'
-#'
+#'@keywords internal
 #'@import data.table
 #'@import destim
 #'@import deduplication
@@ -28,16 +28,16 @@
 buildPostLocJointProbs <-function(path, simFileName, gridFileName, eventsFileName, signalFileName) {
     if(!file.exists(simFileName))
         stop(paste0(simFileName, " doesn't exists"))
-    
+
     if(!file.exists(gridFileName))
         stop(paste0(gridFileName, " doesn't exists"))
-    
+
     if(!file.exists(eventsFileName))
         stop(paste0(eventsFileName, " doesn't exists"))
-    
+
     if(!file.exists(signalFileName))
         stop(paste0(signalFileName, " doesn't exists"))
-    
+
     simParams <- readSimulationParams(simFileName)
     gridParams <- readGridParams(gridFileName)
     events <- readEvents(eventsFileName)
@@ -49,11 +49,11 @@ buildPostLocJointProbs <-function(path, simFileName, gridFileName, eventsFileNam
     for (j in 1:length(devices) ){
         modeli <- fit(model, connections[j,], init = TRUE, method = "solnp")
         B <- scpstates(modeli, connections[j,])
-        out<-transform_postLocJointProb(postJointLocP = B, observedValues=connections[j,], 
-                                        times=seq(from=simParams$start_time, to=simParams$end_time, by=simParams$time_increment), 
-                                        t_increment = simParams$time_increment, 
-                                        ntiles=gridParams$nrow * gridParams$ncol, 
-                                        tileEquiv.dt = eq, devID=devices[j], 
+        out<-transform_postLocJointProb(postJointLocP = B, observedValues=connections[j,],
+                                        times=seq(from=simParams$start_time, to=simParams$end_time, by=simParams$time_increment),
+                                        t_increment = simParams$time_increment,
+                                        ntiles=gridParams$nrow * gridParams$ncol,
+                                        tileEquiv.dt = eq, devID=devices[j],
                                         sparse_postJointLocP.dt = TRUE)
         out[,rasterCell_from:=NULL]
         out[,rasterCell_to:=NULL]
@@ -63,27 +63,27 @@ buildPostLocJointProbs <-function(path, simFileName, gridFileName, eventsFileNam
 }
 
 
-transform_postLocJointProb <- function(postJointLocP, 
+transform_postLocJointProb <- function(postJointLocP,
                                        observedValues,
-                                       times, 
-                                       t_increment, 
-                                       ntiles, 
-                                       pad_coef = 1, 
-                                       tileEquiv.dt, 
+                                       times,
+                                       t_increment,
+                                       ntiles,
+                                       pad_coef = 1,
+                                       tileEquiv.dt,
                                        devID,
                                        sparse_postJointLocP.dt = FALSE){
-    
-    
+
+
     if(!is.null(postJointLocP)){
-        
+
         postJointLocP0 <- copy(postJointLocP)
         postJointLocP0 <- as(postJointLocP0, "dgTMatrix")
-        postJointLocP.dt <- data.table(rasterCell_from = postJointLocP0@i+1, 
-                                       j = postJointLocP0@j+1, 
+        postJointLocP.dt <- data.table(rasterCell_from = postJointLocP0@i+1,
+                                       j = postJointLocP0@j+1,
                                        probL = postJointLocP0@x)
         postJointLocP.dt <- postJointLocP.dt[, time_from := floor((j - 1) / ntiles) + 1][, rasterCell_to := j - ((time_from - 1) * ntiles)]
         postJointLocP.dt <- postJointLocP.dt[, j := NULL]
-        
+
         postJointLocP.dt <- postJointLocP.dt[time_from %in% seq(1, length(observedValues), by = pad_coef)]
         names(times) <- sort(unique(postJointLocP.dt$time_from))
         postJointLocP.dt[, time_from := times[as.character(time_from)]][
@@ -92,7 +92,7 @@ transform_postLocJointProb <- function(postJointLocP,
         setnames(postJointLocP.dt, 'tile', 'tile_from')
         postJointLocP.dt <- merge(postJointLocP.dt, tileEquiv.dt, by.x = 'rasterCell_to', by.y = 'rasterCell')
         setnames(postJointLocP.dt, 'tile', 'tile_to')
-        
+
         if(!sparse_postJointLocP.dt){
             allTiles.dt <- data.table(expand.grid(c(1:ntiles), c(1:ntiles)))
             setnames(allTiles.dt, c("Var1", "Var2"), c("rasterCell_from", "rasterCell_to"))
@@ -104,21 +104,21 @@ transform_postLocJointProb <- function(postJointLocP,
             setnames(allTilesTimes, 'tile', 'tile_from')
             allTilesTimes <- merge(allTilesTimes, tileEquiv.dt, by.x = 'rasterCell_to', by.y = 'rasterCell')
             setnames(allTilesTimes, 'tile', 'tile_to')
-            
-            postJointLocP.dt <- merge(allTilesTimes, postJointLocP.dt, 
+
+            postJointLocP.dt <- merge(allTilesTimes, postJointLocP.dt,
                                       all.x = TRUE, by = intersect(names(allTilesTimes), names(postJointLocP.dt)))
             rm(allTilesTimes)
             postJointLocP.dt[is.na(probL), probL := 0]
-            
+
         }
-        
+
         postJointLocP.dt <- postJointLocP.dt[, time_to := time_from + t_increment]
         postJointLocP.dt[probL<0, probL := 0]
-        setcolorder(postJointLocP.dt, c('time_from', 'time_to', 'tile_from', 'tile_to', 
+        setcolorder(postJointLocP.dt, c('time_from', 'time_to', 'tile_from', 'tile_to',
                                         'probL', 'device', 'rasterCell_from', 'rasterCell_to'))
-        
+
     }
-    
+
     return(postJointLocP.dt)
-    
+
 }

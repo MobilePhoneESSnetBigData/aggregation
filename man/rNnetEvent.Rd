@@ -55,5 +55,8 @@ Generates random values according to a Poisson multinomial
   (mean, mode) represents an estimation of the number of individuals detected
   by the network in a region. Regions are composed as a number of adjacent
   tiles. This is the only one function of this package available to users to
-  compute an estimation of the number of detected individuals.
+  compute an estimation of the number of detected individuals. For a
+  theoretical background an interested reader can find more details
+  in the methodological framework available here:
+  \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}
 }
