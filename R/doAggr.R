@@ -31,10 +31,11 @@
 #'   can be obtained using the mean, mode or median of these values.
 #'
 #'
-#'
+#' @keywords internal
 #' @import data.table
 #' @import deduplication
 #' @include rNnet_Event.R
+#' @export
 doAggr <- function(ichunks, n, tiles, postLoc, dupProbs, regions) {
   nIndividualsT <- list(length=length(ichunks))
   k<-1

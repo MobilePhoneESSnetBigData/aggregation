@@ -37,3 +37,4 @@ Generates a sequence of Poisson multinomial random values for a
   to different workers that run in parallel. This is an internal function
   that cannot be directly called by the users.
 }
+\keyword{internal}

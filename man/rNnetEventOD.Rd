@@ -45,7 +45,10 @@ A data table object with the following columns: \code{time_from,
 Generates random value according to a Poisson multinomial
  distribution needed to estimate the origin destination matrices. This is a
  high level function, the only one to be called by users to estimate the
- number of individuals going from one region to another. The actual
- computations are performed using a parallelization (transparent to the
- users) which uses the whole number of (logical) cores.
+ number of individuals going from one region to another.
+ For a theoretical background an interested reader can find more details
+ in the methodological framework available here:
+  \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}
+ The actual omputations are performed using a parallelization
+ (transparent to the users) which uses the whole number of (logical) cores.
 }

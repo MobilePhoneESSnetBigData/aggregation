@@ -15,13 +15,14 @@
 #'
 #' @return A cluster object used to distribute the computations.
 #'
+#' @keywords internal
 #' @import data.table
 #' @import extraDistr
 #' @import parallel
 #' @import doParallel
-#'   
+#' @export
 buildCluster <- function(varlist, env) {
-  
+
   if (Sys.info()[['sysname']] == 'Linux' |
       Sys.info()[['sysname']] == 'Darwin') {
     cl <- makeCluster(detectCores(), type = "FORK")

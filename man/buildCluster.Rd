@@ -24,3 +24,4 @@ Builds a cluster of working nodes using the \code{parallel}
   function of the package, and it is not available to be direclty called by
   users.
 }
+\keyword{internal}

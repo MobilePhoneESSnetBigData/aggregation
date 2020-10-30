@@ -22,3 +22,4 @@ Generates random values from a Poisson multinomial distribution
   needed for the origin destination matrices. This function is only called
   internally and it cannot by called directly by users.
 }
+\keyword{internal}

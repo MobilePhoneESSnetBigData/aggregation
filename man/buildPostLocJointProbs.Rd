@@ -34,3 +34,4 @@ This is a utility function with the purpose to build the files
  probabilities file names starts with \code{postLocJointProbDevice_} followed for
  the \code{deviceID} and the extension \code{.dt.csv}.
 }
+\keyword{internal}

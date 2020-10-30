@@ -21,3 +21,4 @@ Generates random values from a Poisson multinomial distribution.
   This function is only called internally. It cannot be called directly by
   users.
 }
+\keyword{internal}

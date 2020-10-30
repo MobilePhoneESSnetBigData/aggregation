@@ -12,12 +12,13 @@
 #' @param cellNames A vector with the names of the regions.
 #'
 #' @return The sum of the multinomial variates.
-#'
+#' @keywords internal
 #' @import data.table
+#' @export
 nIndividuals3 <- function(categories, cellNames){
-  
+
   catPerDevice <- Reduce(rbind, lapply(as.character(categories), function(str) {
-    
+
     strsplit(str, split = '-')[[1]]
   }))
   nDev <- length(categories)
@@ -29,14 +30,14 @@ nIndividuals3 <- function(categories, cellNames){
   output <- numeric(length(cellPairs))
   names(output) <- cellPairs
   for (dev_index in 1:nDev){
-    
+
     cell <- catPerDevice[dev_index, 1]
     devCount <- as.numeric(catPerDevice[dev_index, 2])
     tempVec <- numeric(length(cellPairs))
     names(tempVec) <- cellPairs
     tempVec[as.character(cell)] <- devCount
-    output <- output + tempVec    
+    output <- output + tempVec
   }
-  
+
   return(output)
 }

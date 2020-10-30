@@ -12,25 +12,25 @@
 #'
 #' @return A matrix object with the random values generated according to a
 #'   Poisson multinomial distribution.
-#'
+#' @keywords internal
 #' @import data.table
 #' @import extraDistr
 #' @include nIndividuals3.R
 #' @export
 rNnetJoint_Event <- function(n, prob.dt, cellNames){
-  
-  
+
+
   if (!all(c('device', 'region_from', 'region_to', 'devCount', 'prob') %in% names(prob.dt))) {
-    
+
     stop('[rNnetCond_E] prob.dt must have columns device, region_from, region_to, devCount, prob.\n')
   }
-  
+
   #probSums <- prob.dt[, list(totalProb = sum(prob)), by = c('device', 'region_from', 'region_to')]$totalProb
   #if (!all(abs(probSums - 1) < 1e-8)) {
-  #  
+  #
   #  stop('[rNnetCond_E] The sum of probabilities per device is not 1.\n')
   #}
-  
+
   x1 <- prob.dt[
     , c('device', 'region_from', 'region_to', 'devCount', 'prob'), with = FALSE][
       , categories := paste0(region_from, '_', region_to, '-', devCount)]
@@ -57,7 +57,7 @@ rNnetJoint_Event <- function(n, prob.dt, cellNames){
                     value.factor = FALSE, value.name = 'Nnet',
                     variable.name = 'iter')
   setcolorder(x4.molten, c('region_from', 'region_to', 'Nnet', 'iter'))
-  return(x4.molten)  
-  
+  return(x4.molten)
+
 }
 

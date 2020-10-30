@@ -22,3 +22,4 @@ Computes the number of individuals moving from a region to
   distributed random values. This function cannot be directly called by
   users.
 }
+\keyword{internal}

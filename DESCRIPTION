@@ -1,10 +1,10 @@
 Package: aggregation
 Type: Package
-Title: R package for aggragtion of device numbers into population number
+Title: R package for aggregation of device numbers into population number
 Version: 0.1.0
 Author: Bogdan Oancea <bogdan.oancea@gmail.com>, David Salgado <david.salgado.fernandez@ine.es> Sandra Barragan <sandra.barragan.andres@ine.es>
 Maintainer: Bogdan Oancea <bogdan.oancea@gmail.com>
-Description: R package for aggregation
+Description: R package for aggregation of the number of devices detected by mobile network into the number of individuals.
 License: GPL3, EUPL
 Imports: data.table,
          deduplication,
